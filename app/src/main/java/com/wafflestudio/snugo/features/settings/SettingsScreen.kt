@@ -94,20 +94,20 @@ fun SettingsScreen(
             }
 
             Text(
-                text = "token = $accessToken"
+                text = "token = $accessToken",
             )
             // 회원가입 시 서버에서 패스워드를 받지 않으므로 한번 회원가입하고 로그아웃하면 영원히 다시 로그인할 수 없다... 일단 로그아웃 자체를 막아둠
-            /*Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = "로그아웃",
-                modifier =
-                    Modifier.clickable {
-                        scope.launch {
-                            userViewModel.signOut()
-                            navController.navigateAsOrigin(NavigationDestination.Onboarding.route)
-                        }
-                    },
-            )*/
+//            Spacer(modifier = Modifier.height(20.dp))
+//            Text(
+//                text = "로그아웃",
+//                modifier =
+//                    Modifier.clickable {
+//                        scope.launch {
+//                            userViewModel.signOut()
+//                            navController.navigateAsOrigin(NavigationDestination.Onboarding.route)
+//                        }
+//                    },
+//            )
         }
     }
 }

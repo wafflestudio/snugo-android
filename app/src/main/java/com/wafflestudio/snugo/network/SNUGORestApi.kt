@@ -13,6 +13,6 @@ interface SNUGORestApi {
 
     @POST("/v1/user/register")
     suspend fun postSignUp(
-        @Body body: PostSignUpRequestBody
+        @Body body: PostSignUpRequestBody,
     ): PostSignUpResponse
 }

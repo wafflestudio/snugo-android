@@ -130,9 +130,9 @@ fun SignUpScreen(
                 }
             },
             modifier =
-            Modifier
-                .padding(10.dp)
-                .fillMaxWidth(),
+                Modifier
+                    .padding(10.dp)
+                    .fillMaxWidth(),
         ) {
             Text(
                 text = "로그인",

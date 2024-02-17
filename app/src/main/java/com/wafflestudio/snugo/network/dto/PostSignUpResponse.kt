@@ -4,5 +4,5 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class PostSignUpResponse(
-    val token: String
+    val token: String,
 )
