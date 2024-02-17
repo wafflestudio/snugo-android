@@ -4,9 +4,9 @@ import com.naver.maps.geometry.LatLng
 import java.time.LocalDateTime
 
 enum class SortMethod {
-    BASIC,
-    TOP,
-    RECOMMEND,
+    RECENT,
+    NEWHIGH,
+    MY
 }
 
 enum class RecordState {

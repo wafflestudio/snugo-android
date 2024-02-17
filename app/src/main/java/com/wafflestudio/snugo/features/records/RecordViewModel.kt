@@ -28,7 +28,7 @@ class RecordViewModel
         @OptIn(ExperimentalCoroutinesApi::class)
         val myRecords: StateFlow<PagingData<Record>> =
             querySignal.flatMapLatest {
-                recordRepository.getRecentRecords()
+                recordRepository.getRecords()
                     .cachedIn(viewModelScope)
             }
                 .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
@@ -37,17 +37,5 @@ class RecordViewModel
             querySignal.emit(Unit)
         }
 
-        suspend fun getRecord(method: SortMethod)  {
-        /*when(method){
-            SortMethod.BASIC -> {
-                _myRecords.value = api.getBasicRecord()
-            }
-            SortMethod.TOP -> {
-                _myRecords.value = api.getTopRecord()
-            }
-            SortMethod.RECOMMEND -> {
-                _myRecords.value = api.getRecommendedRecord()
-            }
-        }*/
-        }
+
     }

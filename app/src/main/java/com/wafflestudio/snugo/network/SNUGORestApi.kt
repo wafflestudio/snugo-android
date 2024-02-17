@@ -1,5 +1,6 @@
 package com.wafflestudio.snugo.network
 
+import com.wafflestudio.snugo.models.Route
 import com.wafflestudio.snugo.network.dto.GetBuildingResponse
 import com.wafflestudio.snugo.network.dto.GetBuildingsBySectionResponse
 import com.wafflestudio.snugo.network.dto.GetBuildingsResponse
@@ -35,8 +36,34 @@ interface SNUGORestApi {
         @Path("section") section: String,
     ): GetBuildingsBySectionResponse
 
+    @GET("v1/record/top/{id}")
+    suspend fun getTopRecordDetail(
+        @Path("id") id: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): GetRecordDto
+
     @GET("v1/record/recent")
     suspend fun getRecentRecord(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): GetRecordDto
+
+    @GET("v1/record/recent/{id}")
+    suspend fun getRecentRecordDetail(
+        @Path("id") id: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): GetRecordDto
+
+    @GET("v1/record/newhigh")
+    suspend fun getNewHighRecord(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): GetRecordDto
+
+    @GET("v1/record/my")
+    suspend fun getMyRecord(
         @Query("page") page: Int,
         @Query("size") size: Int,
     ): GetRecordDto

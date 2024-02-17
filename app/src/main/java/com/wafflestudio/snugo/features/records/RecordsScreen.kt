@@ -3,15 +3,23 @@ package com.wafflestudio.snugo.features.records
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordsScreen(
     modifier: Modifier = Modifier,
@@ -38,17 +46,42 @@ fun RecordsScreen(
 //            6109789L,
 //        )
     val recordList = viewModel.myRecords.collectAsLazyPagingItems()
-    /*val recordList = viewModel.myRecords.collectAsState().value
-    LaunchedEffect(Unit){
-        viewModel.getRecord(SortMethod.BASIC)
-    }*/
+
+    val options = listOf("Recent", "NewHigh", "My")
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(options[0]) }
+
     if (recordState.value == RecordState.BOX) {
-        Log.d("aaaa", recordList.itemCount.toString())
+        /*ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = {expanded = !expanded}
+        ) {
+            TextField(value = selectedOptionText,
+                onValueChange = {} )
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                }
+            ) {
+                options.forEach { selectionOption ->
+                    DropdownMenuItem(
+                        onClick = {
+                            selectedOptionText = selectionOption
+                            expanded = false
+                        }
+                    ){
+                        Text(text = selectionOption)
+                    }
+                }
+            }
+        }*/
+
         LazyColumn {
             itemsIndexed(recordList) { idx, it ->
                 /*Log.d("aaaa",idx.toString())
                 it ?: return@itemsIndexed*/
-                it?.let {
+                it?.let { 
                     RecordBox(
                         record = it,
                         navController = navController,

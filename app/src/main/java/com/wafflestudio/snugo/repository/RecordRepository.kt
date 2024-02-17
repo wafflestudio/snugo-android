@@ -5,5 +5,5 @@ import com.wafflestudio.snugo.models.Record
 import kotlinx.coroutines.flow.Flow
 
 interface RecordRepository {
-    suspend fun getRecentRecords(): Flow<PagingData<Record>>
+    suspend fun getRecords(): Flow<PagingData<Record>>
 }
