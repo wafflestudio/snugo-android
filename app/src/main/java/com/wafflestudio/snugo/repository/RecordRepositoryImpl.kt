@@ -1,11 +1,9 @@
 package com.wafflestudio.snugo.repository
 
 import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.wafflestudio.snugo.features.records.RecordPageSource
 import com.wafflestudio.snugo.models.Record
-import com.wafflestudio.snugo.models.SortMethod
 import com.wafflestudio.snugo.network.SNUGORestApi
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -20,12 +18,19 @@ class RecordRepositoryImpl
         override suspend fun getRecords(): Flow<PagingData<Record>> {
             return Pager(
                 config =
-                RecordPageSource.Config,
+                    RecordPageSource.Config,
                 pagingSourceFactory = {
                     RecordPageSource(
-                        api
+                        api,
                     )
                 },
+            ).flow
+        }
+
+        override fun getPagedMyRecords(): Flow<PagingData<Record>> {
+            return Pager(
+                config = MyRecordsPagingSource.Config,
+                pagingSourceFactory = { MyRecordsPagingSource(api) },
             ).flow
         }
     }
