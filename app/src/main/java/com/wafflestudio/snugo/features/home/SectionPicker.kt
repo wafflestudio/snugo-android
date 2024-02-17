@@ -23,25 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.naver.maps.geometry.LatLng
+import com.wafflestudio.snugo.models.Section
 import kotlinx.coroutines.flow.filter
-
-enum class Department {
-    MAIN_GATE,
-    BUSINESS,
-    SOCIAL,
-    AGRICULTURE,
-    DOWN_ENG_1,
-    DOWN_ENG_2,
-    UP_ENG,
-    NATURE,
-    EDUCATION,
-    DORMITORY,
-    RESEARCH_PARK,
-}
 
 val polygonMap =
     mapOf(
-        Department.MAIN_GATE to
+        Section.A to // 정문
             listOf(
                 LatLng(37.46552990680509, 126.94851529307664),
                 LatLng(37.46685649206763, 126.94829128055403),
@@ -61,7 +48,7 @@ val polygonMap =
                 LatLng(37.46598445637039, 126.95141598596575),
                 LatLng(37.4655182477145, 126.94853226503295),
             ),
-        Department.SOCIAL to
+        Section.B to // 사회대법대
             listOf(
                 LatLng(37.46550393766937, 126.94862272167563),
                 LatLng(37.46284322714311, 126.94913063595618),
@@ -75,7 +62,7 @@ val polygonMap =
                 LatLng(37.465841161424706, 126.95138930776051),
                 LatLng(37.465554119758785, 126.94854867306856),
             ),
-        Department.BUSINESS to
+        Section.C to // 자연대
             listOf(
                 LatLng(37.46272689437007, 126.94921977213022),
                 LatLng(37.46267233549381, 126.95063492363101),
@@ -98,7 +85,7 @@ val polygonMap =
                 LatLng(37.46168527834936, 126.94940380019966),
                 LatLng(37.4626441047029, 126.94922880233702),
             ),
-        Department.AGRICULTURE to
+        Section.D to // 농생대
             listOf(
                 LatLng(37.46063507801415, 126.94893279427652),
                 LatLng(37.45963759355272, 126.94859216323528),
@@ -110,7 +97,7 @@ val polygonMap =
                 LatLng(37.46067351574821, 126.94858431928805),
                 LatLng(37.46062048072302, 126.94894352315151),
             ),
-        Department.DOWN_ENG_1 to
+        Section.E to // 아랫공
             listOf(
                 LatLng(37.45732726440422, 126.94921685264671),
                 LatLng(37.45333538541419, 126.9503329183608),
@@ -127,25 +114,7 @@ val polygonMap =
                 LatLng(37.457385770581865, 126.95043231784962),
                 LatLng(37.45733280065077, 126.94923312500424),
             ),
-        Department.DOWN_ENG_2 to
-            listOf(
-                LatLng(37.45368291934703, 126.95192964050955),
-                LatLng(37.45527763880004, 126.95181006659504),
-                LatLng(37.456214723640514, 126.95237503577533),
-                LatLng(37.457029178804085, 126.95223367330942),
-                LatLng(37.458049576445724, 126.95252226903057),
-                LatLng(37.45869315839593, 126.95319296208226),
-                LatLng(37.45769361607655, 126.95433069131457),
-                LatLng(37.45687686104439, 126.95504034896567),
-                LatLng(37.45624230714513, 126.95483626385482),
-                LatLng(37.45600415944916, 126.95513474935944),
-                LatLng(37.45377059578522, 126.9535264961475),
-                LatLng(37.453519300182464, 126.95341229869058),
-                LatLng(37.453309783065635, 126.95324237780636),
-                LatLng(37.45321482187525, 126.95270294616961),
-                LatLng(37.45369716325049, 126.95200528158739),
-            ),
-        Department.UP_ENG to
+        Section.F to // 약대
             listOf(
                 LatLng(37.44797946939286, 126.94914767646054),
                 LatLng(37.44761663787207, 126.94923805953505),
@@ -171,7 +140,43 @@ val polygonMap =
                 LatLng(37.449269650475465, 126.94970608408323),
                 LatLng(37.447971387154446, 126.9491675270686),
             ),
-        Department.NATURE to
+        Section.G to // 약대
+            listOf(
+                LatLng(37.45368291934703, 126.95192964050955),
+                LatLng(37.45527763880004, 126.95181006659504),
+                LatLng(37.456214723640514, 126.95237503577533),
+                LatLng(37.457029178804085, 126.95223367330942),
+                LatLng(37.458049576445724, 126.95252226903057),
+                LatLng(37.45869315839593, 126.95319296208226),
+                LatLng(37.45769361607655, 126.95433069131457),
+                LatLng(37.45687686104439, 126.95504034896567),
+                LatLng(37.45624230714513, 126.95483626385482),
+                LatLng(37.45600415944916, 126.95513474935944),
+                LatLng(37.45377059578522, 126.9535264961475),
+                LatLng(37.453519300182464, 126.95341229869058),
+                LatLng(37.453309783065635, 126.95324237780636),
+                LatLng(37.45321482187525, 126.95270294616961),
+                LatLng(37.45369716325049, 126.95200528158739),
+            ),
+        Section.H to // 관정
+            listOf(
+                LatLng(37.46063662604612, 126.9515894656115),
+                LatLng(37.46119434077295, 126.95216482569515),
+                LatLng(37.461078736739815, 126.95282660404757),
+                LatLng(37.46117559737644, 126.95341047911666),
+                LatLng(37.461181228061875, 126.95480067020287),
+                LatLng(37.460814141460055, 126.9560039096367),
+                LatLng(37.460289527590064, 126.95680852731226),
+                LatLng(37.45886302330611, 126.95530271263499),
+                LatLng(37.459149734477585, 126.95483440789536),
+                LatLng(37.45975444935516, 126.95426809530875),
+                LatLng(37.45923941728038, 126.95292017978801),
+                LatLng(37.45973605370042, 126.95297195107798),
+                LatLng(37.4599807544344, 126.95261098982974),
+                LatLng(37.460274511228235, 126.95189132787152),
+                LatLng(37.46061202692875, 126.95164397584654),
+            ),
+        Section.I to // 인문대
             listOf(
                 LatLng(37.457096612707986, 126.95216112075667),
                 LatLng(37.458141093762485, 126.95263379667136),
@@ -194,25 +199,7 @@ val polygonMap =
                 LatLng(37.4574355340238, 126.95180616713975),
                 LatLng(37.45710137201327, 126.95214829071023),
             ),
-        Department.EDUCATION to
-            listOf(
-                LatLng(37.46063662604612, 126.9515894656115),
-                LatLng(37.46119434077295, 126.95216482569515),
-                LatLng(37.461078736739815, 126.95282660404757),
-                LatLng(37.46117559737644, 126.95341047911666),
-                LatLng(37.461181228061875, 126.95480067020287),
-                LatLng(37.460814141460055, 126.9560039096367),
-                LatLng(37.460289527590064, 126.95680852731226),
-                LatLng(37.45886302330611, 126.95530271263499),
-                LatLng(37.459149734477585, 126.95483440789536),
-                LatLng(37.45975444935516, 126.95426809530875),
-                LatLng(37.45923941728038, 126.95292017978801),
-                LatLng(37.45973605370042, 126.95297195107798),
-                LatLng(37.4599807544344, 126.95261098982974),
-                LatLng(37.460274511228235, 126.95189132787152),
-                LatLng(37.46061202692875, 126.95164397584654),
-            ),
-        Department.DORMITORY to
+        Section.J to
             listOf(
                 LatLng(37.461306773616705, 126.95632925876555),
                 LatLng(37.46275587751286, 126.95766786299924),
@@ -228,7 +215,7 @@ val polygonMap =
                 LatLng(37.45978322047525, 126.95732094277463),
                 LatLng(37.46124040191861, 126.95635400769498),
             ),
-        Department.RESEARCH_PARK to
+        Section.K to
             listOf(
                 LatLng(37.46462393308708, 126.95798924876897),
                 LatLng(37.464891351282915, 126.95899202263149),
@@ -257,31 +244,30 @@ val polygonMap =
             ),
     )
 
-fun Department.color(): Color =
+fun Section.color(): Color =
     when (this) {
-        Department.DOWN_ENG_2 -> Color(247, 199, 62)
-        Department.SOCIAL -> Color(102, 104, 172)
-        Department.BUSINESS -> Color(113, 197, 95)
-        Department.DORMITORY -> Color(126, 194, 162)
-        Department.AGRICULTURE -> Color(240, 121, 180)
-        Department.EDUCATION -> Color(177, 219, 84)
-        Department.DOWN_ENG_1 -> Color(238, 98, 68)
-        Department.RESEARCH_PARK -> Color(210, 208, 198)
-        Department.UP_ENG -> Color(242, 127, 68)
-        Department.NATURE -> Color(176, 141, 189)
-        Department.MAIN_GATE -> Color(159, 222, 226)
+        Section.A -> Color(247, 199, 62)
+        Section.B -> Color(102, 104, 172)
+        Section.C -> Color(113, 197, 95)
+        Section.D -> Color(126, 194, 162)
+        Section.E -> Color(240, 121, 180)
+        Section.F -> Color(177, 219, 84)
+        Section.G -> Color(238, 98, 68)
+        Section.H -> Color(210, 208, 198)
+        Section.I -> Color(242, 127, 68)
+        Section.J -> Color(176, 141, 189)
+        Section.K -> Color(159, 222, 226)
     }
 
 @Composable
-fun DepartmentPicker(
-    initialIndex: Int,
-    onItemSelected: (Int) -> Unit,
+fun SectionPicker(
+    onSectionSelected: (Section) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
-        lazyListState.scrollToItem(initialIndex)
+        lazyListState.scrollToItem(0)
         snapshotFlow { lazyListState.isScrollInProgress }
             .filter { it.not() }
             .collect {
@@ -289,7 +275,7 @@ fun DepartmentPicker(
                     lazyListState.layoutInfo.visibleItemsInfo.find {
                         it.offset == 0
                     }?.index ?: 0
-                onItemSelected(selectedIndex)
+                onSectionSelected(Section.entries[selectedIndex])
             }
     }
 
@@ -300,15 +286,15 @@ fun DepartmentPicker(
                 modifier
                     .fillMaxWidth()
                     .padding(vertical = 10.dp)
-                    .height(DepartmentPickerConstants.ITEM_HEIGHT_DP.dp * 3),
+                    .height(SectionPickerConstants.ITEM_HEIGHT_DP.dp * 3),
             flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState),
-            contentPadding = PaddingValues(vertical = DepartmentPickerConstants.ITEM_HEIGHT_DP.dp),
+            contentPadding = PaddingValues(vertical = SectionPickerConstants.ITEM_HEIGHT_DP.dp),
         ) {
-            items(Department.entries.map { it.name }) {
+            items(Section.entries.map { it.name }) {
                 Box(
                     modifier =
                         Modifier
-                            .height(DepartmentPickerConstants.ITEM_HEIGHT_DP.dp),
+                            .height(SectionPickerConstants.ITEM_HEIGHT_DP.dp),
                 ) {
                     Text(
                         text = it,
@@ -327,7 +313,7 @@ fun DepartmentPicker(
                 Modifier
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .height(DepartmentPickerConstants.ITEM_HEIGHT_DP.dp)
+                    .height(SectionPickerConstants.ITEM_HEIGHT_DP.dp)
                     .background(
                         color = Color.LightGray.copy(alpha = 0.3f),
                         shape = RoundedCornerShape(10.dp),

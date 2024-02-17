@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,20 +19,25 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
+import com.naver.maps.map.compose.Marker
+import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.PathOverlay
 import com.naver.maps.map.compose.PolygonOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.wafflestudio.snugo.location.MapConstants
+import com.wafflestudio.snugo.models.Section
 import kotlinx.coroutines.launch
 
 enum class HomePageMode {
@@ -46,11 +52,13 @@ fun HomeScreen(
     pageMode: HomePageMode,
     path: List<LatLng>,
     startMoving: () -> Unit,
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
     val cameraPositionState = rememberCameraPositionState()
     val scope = rememberCoroutineScope()
 
-    var department by remember { mutableStateOf(Department.entries[0]) }
+    val buildingsBySection by homeViewModel.buildingsBySection.collectAsState()
+    var selectedSection by remember { mutableStateOf(Section.A) }
     var pathCoords by remember {
         mutableStateOf(emptyList<LatLng>())
     }
@@ -92,12 +100,26 @@ fun HomeScreen(
             }
 
             PolygonOverlay(
-                coords = polygonMap[department]!!,
+                coords = polygonMap[selectedSection]!!,
                 color =
-                    department.color().copy(
+                    selectedSection.color().copy(
                         alpha = 0.4f,
                     ),
             )
+
+            buildingsBySection[selectedSection]?.forEach { building ->
+                Marker(
+                    captionText = building.name,
+                    state =
+                        MarkerState(
+                            position =
+                                CameraPosition(
+                                    building.location,
+                                    6.0,
+                                ).target,
+                        ),
+                )
+            }
         }
         Row(modifier = Modifier.weight(0.3f)) {
             Text(
@@ -116,12 +138,11 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold,
                     ),
             )
-            DepartmentPicker(
-                initialIndex = 0,
-                onItemSelected = { index ->
+            SectionPicker(
+                onSectionSelected = { section ->
                     scope.launch {
-                        val latLngs = polygonMap[Department.entries[index]]!!
-                        department = Department.entries[index]
+                        val latLngs = polygonMap[section]!!
+                        selectedSection = section
                         cameraPositionState.animate(
                             CameraUpdate.fitBounds(
                                 LatLngBounds.from(

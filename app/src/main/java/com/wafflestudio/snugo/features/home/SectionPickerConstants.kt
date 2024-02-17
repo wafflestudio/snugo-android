@@ -1,5 +1,5 @@
 package com.wafflestudio.snugo.features.home
 
-object DepartmentPickerConstants {
+object SectionPickerConstants {
     const val ITEM_HEIGHT_DP = 40
 }
