@@ -5,6 +5,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.os.Looper
 import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Granularity
 import com.google.android.gms.location.LocationListener
@@ -12,17 +13,19 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.naver.maps.geometry.LatLng
+import com.wafflestudio.snugo.location.LocalStorageLocalStorageLocationRecordRecordSaver
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LocationService : LifecycleService() {
-    private val binder = LocalBinder()
+    @Inject
+    lateinit var localStorageLocationRecordSaver: LocalStorageLocalStorageLocationRecordRecordSaver
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var locationListener: LocationListener? = null
+    private val binder = LocalBinder()
 
     override fun onCreate() {
         super.onCreate()
@@ -47,34 +50,39 @@ class LocationService : LifecycleService() {
         return binder
     }
 
-    fun subscribeCurrentLocation(): Flow<LatLng> =
-        callbackFlow {
-            try {
-                locationListener =
-                    LocationListener {
-                        trySend(LatLng(it.latitude, it.longitude))
-                    }
-
-                fusedLocationClient.requestLocationUpdates(
-                    LocationRequest
-                        .Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L)
-                        .setMinUpdateDistanceMeters(1f)
-                        .setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
-                        .setWaitForAccurateLocation(true)
-                        .build(),
-                    locationListener!!,
-                    Looper.getMainLooper(),
-                )
-
-                awaitClose {
-                    locationListener?.let {
-                        fusedLocationClient.removeLocationUpdates(it)
+    fun startRecordingPath() {
+        try {
+            locationListener =
+                LocationListener {
+                    lifecycleScope.launch {
+                        localStorageLocationRecordSaver.addLocationToRecordingPath(
+                            System.currentTimeMillis(),
+                            LatLng(it.latitude, it.longitude),
+                        )
                     }
                 }
-            } catch (e: SecurityException) {
-                e.printStackTrace()
-            }
+
+            fusedLocationClient.requestLocationUpdates(
+                LocationRequest
+                    .Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000L)
+                    .setMinUpdateDistanceMeters(1f)
+                    .setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
+                    .setWaitForAccurateLocation(true)
+                    .build(),
+                locationListener!!,
+                Looper.getMainLooper(),
+            )
+        } catch (e: SecurityException) {
+            e.printStackTrace()
         }
+    }
+
+    fun stopRecordingPath() {
+        locationListener = null
+        lifecycleScope.launch {
+            localStorageLocationRecordSaver.clearRecordingPath()
+        }
+    }
 
     private fun startForegroundService() {
         val notification = createNotification()
