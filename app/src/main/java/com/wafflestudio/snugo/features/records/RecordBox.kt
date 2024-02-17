@@ -24,16 +24,15 @@ fun convertLongToTime(time: Long): String {
     return format.format(date)
 }
 
-fun durationToString(duration: Long): String  {
+fun durationToString(duration: Long): String {
     val second = (duration / 1000) % 60
     var minute = (duration / 1000) / 60
     val hour = minute / 60
     minute %= 60
     return if (hour == 0L) {
-        if (minute == 0L)
-            {
-                second.toString() + "초"
-            } else {
+        if (minute == 0L) {
+            second.toString() + "초"
+        } else {
             minute.toString() + "분 " + second.toString() + "초"
         }
     } else {
@@ -49,7 +48,7 @@ fun RecordBox(
     record: Record,
     navController: NavController,
     boxClicked: () -> Unit,
-)  {
+) {
     Box(
         modifier =
             Modifier.background(Color.Yellow).padding(12.dp)
@@ -69,10 +68,9 @@ fun RecordBox(
             Row {
                 record.buildings.mapIndexed { index, building ->
                     var addText = "동 -> "
-                    if (index + 1 == record.buildings.size)
-                        {
-                            addText = "동"
-                        }
+                    if (index + 1 == record.buildings.size) {
+                        addText = "동"
+                    }
                     Text(building.id.toString() + addText)
                 }
             }

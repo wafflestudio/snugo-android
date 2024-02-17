@@ -30,8 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -44,10 +44,9 @@ import com.naver.maps.geometry.LatLng
 import com.wafflestudio.snugo.features.arrivaldetail.ArrivalDetailScreen
 import com.wafflestudio.snugo.features.home.HomePageMode
 import com.wafflestudio.snugo.features.home.HomeScreen
-import com.wafflestudio.snugo.features.onboarding.SignInScreen
-import com.wafflestudio.snugo.features.records.RecordMap
 import com.wafflestudio.snugo.features.onboarding.SignUpScreen
 import com.wafflestudio.snugo.features.onboarding.UserViewModel
+import com.wafflestudio.snugo.features.records.RecordMap
 import com.wafflestudio.snugo.features.records.RecordsScreen
 import com.wafflestudio.snugo.features.settings.SettingsScreen
 import com.wafflestudio.snugo.location.LocationProvider

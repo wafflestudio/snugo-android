@@ -33,22 +33,21 @@ fun RecordsScreen(
     LaunchedEffect(Unit){
         viewModel.getRecord(SortMethod.BASIC)
     }*/
-    if (recordState.value == RecordState.BOX)
-        {
-            LazyColumn {
-                itemsIndexed(recordList) {
-                        index, item ->
-                    RecordBox(
-                        record = item,
-                        navController = navController,
-                        boxClicked = {
-                            boxIndex.value = index
-                            recordState.value = RecordState.MAP
-                        },
-                    )
-                }
+    if (recordState.value == RecordState.BOX) {
+        LazyColumn {
+            itemsIndexed(recordList) {
+                    index, item ->
+                RecordBox(
+                    record = item,
+                    navController = navController,
+                    boxClicked = {
+                        boxIndex.value = index
+                        recordState.value = RecordState.MAP
+                    },
+                )
             }
-        } else {
+        }
+    } else {
         Log.d("aaaa", "changed")
         RecordMap(path = recordList[boxIndex.value].path.map { it.second })
     }

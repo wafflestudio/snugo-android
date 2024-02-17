@@ -19,7 +19,7 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 fun RecordMap(
     modifier: Modifier = Modifier,
     path: List<LatLng>,
-)  {
+) {
     val cameraPositionState = rememberCameraPositionState()
     NaverMap(
         modifier = Modifier,
