@@ -3,7 +3,7 @@ package com.wafflestudio.snugo.di
 import android.content.Context
 import com.squareup.moshi.Moshi
 import com.wafflestudio.snugo.R
-import com.wafflestudio.snugo.network.SnugoRestApi
+import com.wafflestudio.snugo.network.SNUGORestApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,7 +43,7 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideSNUGORestApi(retrofit: Retrofit): SnugoRestApi {
-        return retrofit.create(SnugoRestApi::class.java)
+    fun provideSNUGORestApi(retrofit: Retrofit): SNUGORestApi {
+        return retrofit.create(SNUGORestApi::class.java)
     }
 }

@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.wafflestudio.snugo.network.SnugoRestApi
+import com.wafflestudio.snugo.network.SNUGORestApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 class UserRepositoryImpl
     @Inject
     constructor(
-        private val api: SnugoRestApi,
+        private val api: SNUGORestApi,
         private val dataStore: DataStore<Preferences>,
     ) : UserRepository {
         override val accessToken: Flow<String?> = dataStore.data.map { it[ACCESS_TOKEN] ?: "" }
