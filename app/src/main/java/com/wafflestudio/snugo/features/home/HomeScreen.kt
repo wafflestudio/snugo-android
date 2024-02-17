@@ -50,6 +50,7 @@ import com.naver.maps.map.compose.PathOverlay
 import com.naver.maps.map.compose.PolygonOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
+import com.naver.maps.map.util.MarkerIcons
 import com.wafflestudio.snugo.R
 import com.wafflestudio.snugo.location.MapConstants
 import com.wafflestudio.snugo.models.Section
@@ -149,7 +150,6 @@ fun HomeScreen(
 
             startBuilding?.let {
                 Marker(
-                    captionText = it.name,
                     state =
                         MarkerState(
                             position =
@@ -158,11 +158,12 @@ fun HomeScreen(
                                     6.0,
                                 ).target,
                         ),
+                    icon = MarkerIcons.BLUE,
+                    captionText = it.name,
                 )
             }
             endBuilding?.let {
                 Marker(
-                    captionText = it.name,
                     state =
                         MarkerState(
                             position =
@@ -171,6 +172,8 @@ fun HomeScreen(
                                     6.0,
                                 ).target,
                         ),
+                    icon = MarkerIcons.RED,
+                    captionText = it.name,
                 )
             }
         }
@@ -209,7 +212,7 @@ fun HomeScreen(
                                     Point.START ->
                                         Modifier.border(
                                             width = 2.dp,
-                                            color = Color.Black,
+                                            color = Color.Blue,
                                             shape = RoundedCornerShape(10.dp),
                                         )
 
@@ -246,7 +249,7 @@ fun HomeScreen(
                                     Point.END ->
                                         Modifier.border(
                                             width = 2.dp,
-                                            color = Color.Black,
+                                            color = Color.Red,
                                             shape = RoundedCornerShape(10.dp),
                                         )
 
