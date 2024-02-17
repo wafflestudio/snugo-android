@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +41,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.naver.maps.geometry.LatLng
 import com.wafflestudio.snugo.features.arrivaldetail.ArrivalDetailScreen
 import com.wafflestudio.snugo.features.home.HomePageMode
 import com.wafflestudio.snugo.features.home.HomeScreen
@@ -57,9 +57,9 @@ import com.wafflestudio.snugo.navigation.NavigationDestination
 import com.wafflestudio.snugo.service.LocationService
 import com.wafflestudio.snugo.ui.theme.SnugoTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             SnugoTheme {
                 val navController = rememberNavController()
                 val backStackEntry by navController.currentBackStackEntryAsState()
+                val scope = rememberCoroutineScope()
                 val showBottomNavigation =
                     BottomNavigationItem.items.map { it.destination.route }
                         .contains(backStackEntry?.destination?.route)
@@ -98,8 +99,7 @@ class MainActivity : AppCompatActivity() {
                     label = "bottom navigation offset dp",
                 )
 
-                val pathFlow = remember { mutableStateOf<Flow<List<LatLng>>?>(null) }
-                val paths = pathFlow.value?.collectAsState(emptyList())
+                val paths by locationProvider.currentRecordingPath.collectAsState(null)
                 var homePageMode by remember {
                     mutableStateOf(HomePageMode.NORMAL)
                 }
@@ -137,10 +137,12 @@ class MainActivity : AppCompatActivity() {
                                     HomeScreen(
                                         modifier = Modifier.padding(bottom = (80 - animatedOffsetDp).dp),
                                         pageMode = homePageMode,
-                                        paths?.value ?: emptyList(),
+                                        paths?.path?.map { it.location } ?: emptyList(),
                                         startMoving = {
                                             homePageMode = HomePageMode.MOVING
-                                            pathFlow.value = locationProvider.subscribePath()
+                                            scope.launch {
+                                                locationProvider.startRecordingPath()
+                                            }
                                         },
                                     )
                                 }

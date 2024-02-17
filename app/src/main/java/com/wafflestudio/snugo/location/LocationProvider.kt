@@ -6,54 +6,33 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
-import com.naver.maps.geometry.LatLng
+import com.wafflestudio.snugo.features.home.RouteRecord
 import com.wafflestudio.snugo.service.LocationService
 import dagger.hilt.android.qualifiers.ActivityContext
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collectLatest
 import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 interface ILocationProvider {
-    fun subscribeCurrentLocation(): Flow<LatLng>
+    val currentRecordingPath: Flow<RouteRecord?>
 
-    fun subscribePath(): Flow<List<LatLng>>
+    suspend fun startRecordingPath()
 }
 
 class LocationProvider(
     @ActivityContext context: Context,
+    localStorageLocationRecordSaver: LocalStorageLocalStorageLocationRecordRecordSaver,
 ) : ILocationProvider {
     private val weakActivity = WeakReference(context as Activity)
 
-    override fun subscribeCurrentLocation(): Flow<LatLng> =
-        callbackFlow {
-            val service = startLocationService()
-            service.subscribeCurrentLocation().collectLatest {
-                trySend(it)
-            }
+    override val currentRecordingPath: Flow<RouteRecord?> =
+        localStorageLocationRecordSaver.recordingPath
 
-            awaitClose {
-                service.stopSelf()
-            }
-        }
-
-    override fun subscribePath(): Flow<List<LatLng>> =
-        callbackFlow {
-            val list = mutableListOf<LatLng>()
-
-            val service = startLocationService()
-            service.subscribeCurrentLocation().collectLatest {
-                list.add(it)
-                trySend(list.toMutableList())
-            }
-
-            awaitClose {
-                service.stopSelf()
-            }
-        }
+    override suspend fun startRecordingPath() {
+        val service = startLocationService()
+        service.startRecordingPath()
+    }
 
     private suspend fun startLocationService(): LocationService =
         suspendCoroutine { continuation ->

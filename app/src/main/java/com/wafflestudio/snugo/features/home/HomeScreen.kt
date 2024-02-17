@@ -32,6 +32,7 @@ import com.naver.maps.map.compose.PolygonOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
 import kotlinx.coroutines.launch
+import com.wafflestudio.snugo.location.MapConstants
 
 enum class HomePageMode {
     NORMAL,
@@ -65,7 +66,11 @@ fun HomeScreen(
                 pathCoords = (pathCoords + latLng)
             },
             locationSource = rememberFusedLocationSource(),
-            properties = MapProperties(locationTrackingMode = LocationTrackingMode.Follow),
+            properties =
+                MapProperties(
+                    locationTrackingMode = LocationTrackingMode.Follow,
+                    extent = MapConstants.SNU_BOUNDARY,
+                ),
             uiSettings = MapUiSettings(isLocationButtonEnabled = true),
         ) {
             if (path.size >= 2) {
