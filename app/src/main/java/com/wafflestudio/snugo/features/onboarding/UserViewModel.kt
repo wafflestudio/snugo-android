@@ -1,12 +1,13 @@
 package com.wafflestudio.snugo.features.onboarding
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewModelScope    
 import com.wafflestudio.snugo.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -55,22 +56,6 @@ class UserViewModel
             )
         }
 
-        /*private val _myRecords = MutableStateFlow<List<Record>>(listOf())
-        val myRecords = _myRecords.asStateFlow()
-        suspend fun getRecord(method: SortMethod){
-            when(method){
-                SortMethod.BASIC -> {
-                    _myRecords.value = api.getBasicRecord()
-                }
-                SortMethod.TOP -> {
-                    _myRecords.value = api.getTopRecord()
-                }
-                SortMethod.RECOMMEND -> {
-                    _myRecords.value = api.getRecommendedRecord()
-                }
-            }
-
-        }*/
         suspend fun signOut() {
             userRepository.signOut()
         }
