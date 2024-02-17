@@ -1,7 +1,6 @@
 package com.wafflestudio.snugo.features.settings
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,20 +17,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wafflestudio.snugo.LocalNavController
 import com.wafflestudio.snugo.R
 import com.wafflestudio.snugo.components.TopBar
 import com.wafflestudio.snugo.features.onboarding.UserViewModel
-import com.wafflestudio.snugo.navigateAsOrigin
-import com.wafflestudio.snugo.navigation.NavigationDestination
-import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
@@ -41,8 +35,6 @@ fun SettingsScreen(
     val accessToken by userViewModel.accessToken.collectAsState()
     val nickname by userViewModel.nickname.collectAsState()
     val userDepartment by userViewModel.userDepartment.collectAsState()
-    val scope = rememberCoroutineScope()
-    val navController = LocalNavController.current
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -100,7 +92,12 @@ fun SettingsScreen(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                text = "token = $accessToken"
+            )
+            // 회원가입 시 서버에서 패스워드를 받지 않으므로 한번 회원가입하고 로그아웃하면 영원히 다시 로그인할 수 없다... 일단 로그아웃 자체를 막아둠
+            /*Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = "로그아웃",
                 modifier =
@@ -110,7 +107,7 @@ fun SettingsScreen(
                             navController.navigateAsOrigin(NavigationDestination.Onboarding.route)
                         }
                     },
-            )
+            )*/
         }
     }
 }

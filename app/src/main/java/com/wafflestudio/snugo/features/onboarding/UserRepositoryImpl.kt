@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.wafflestudio.snugo.network.SNUGORestApi
+import com.wafflestudio.snugo.network.dto.PostSignUpRequestBody
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -27,12 +28,13 @@ class UserRepositoryImpl
             return api.getDepartments()
         }
 
-        override suspend fun signIn(
+        override suspend fun signUp(
             nickname: String,
             department: String,
         ) {
+            val response = api.postSignUp(PostSignUpRequestBody(nickname, department))
             dataStore.edit { preferences ->
-                preferences[ACCESS_TOKEN] = "testaccesstoken"
+                preferences[ACCESS_TOKEN] = response.token
                 preferences[NICKNAME] = nickname
                 preferences[DEPARTMENT] = department
             }

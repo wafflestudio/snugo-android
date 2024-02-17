@@ -1,7 +1,9 @@
 package com.wafflestudio.snugo.di
 
 import android.content.Context
+import com.naver.maps.map.BuildConfig
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.wafflestudio.snugo.R
 import com.wafflestudio.snugo.network.SNUGORestApi
 import dagger.Module
@@ -10,6 +12,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
@@ -20,12 +23,20 @@ class NetworkModule {
     @Provides
     fun provideMoshi(): Moshi {
         return Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
             .build()
     }
 
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
+            .addNetworkInterceptor(HttpLoggingInterceptor().apply {
+                level = if(BuildConfig.DEBUG) {
+                    HttpLoggingInterceptor.Level.BODY
+                } else {
+                    HttpLoggingInterceptor.Level.NONE
+                }
+            })
             .build()
     }
 

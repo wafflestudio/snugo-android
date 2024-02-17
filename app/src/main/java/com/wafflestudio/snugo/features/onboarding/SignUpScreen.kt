@@ -1,5 +1,6 @@
 package com.wafflestudio.snugo.features.onboarding
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,15 +38,17 @@ import com.wafflestudio.snugo.components.CtaButton
 import com.wafflestudio.snugo.navigateAsOrigin
 import com.wafflestudio.snugo.navigation.NavigationDestination
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen(
+fun SignUpScreen(
     modifier: Modifier = Modifier,
     userViewModel: UserViewModel = hiltViewModel(),
 ) {
     val navController = LocalNavController.current
     val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var nickname by remember { mutableStateOf("") }
     val departments by userViewModel.departments.collectAsState()
@@ -52,8 +56,12 @@ fun SignInScreen(
     var isDepartmentMenuExpanded by remember { mutableStateOf(false) }
 
     val handleSignIn: suspend () -> Unit = {
-        userViewModel.signIn(nickname, departmentIndex)
-        navController.navigateAsOrigin(NavigationDestination.Main.route)
+        try {
+            userViewModel.signUp(nickname, departmentIndex)
+            navController.navigateAsOrigin(NavigationDestination.Main.route)
+        } catch (e: HttpException) {
+            Toast.makeText(context, "이미 가입된 유저입니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     Column(
@@ -122,9 +130,9 @@ fun SignInScreen(
                 }
             },
             modifier =
-                Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth(),
+            Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
         ) {
             Text(
                 text = "로그인",

@@ -11,7 +11,7 @@ interface UserRepository {
 
     suspend fun getDepartments(): List<String>
 
-    suspend fun signIn(
+    suspend fun signUp(
         nickname: String,
         department: String,
     )

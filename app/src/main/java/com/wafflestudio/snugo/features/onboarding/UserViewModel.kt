@@ -44,11 +44,11 @@ class UserViewModel
                 }
         }
 
-        suspend fun signIn(
+        suspend fun signUp(
             nickname: String,
             departmentIndex: Int,
         ) {
-            userRepository.signIn(
+            userRepository.signUp(
                 nickname,
                 if (departmentIndex == 0) "" else _departments.value[departmentIndex],
             )
