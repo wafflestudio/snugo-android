@@ -17,7 +17,7 @@ data class Record(
     val id: String,
     val nickname: String,
     val buildings: List<Building>,
-    val path: List<Pair<Long, LatLng>>, // 타임스탬프 + 위경도
+    val path: List<Pair<Long, LatLng>>,
     val startTime: Long,
     val duration: Long,
 )
