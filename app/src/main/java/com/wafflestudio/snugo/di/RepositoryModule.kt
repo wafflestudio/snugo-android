@@ -2,6 +2,8 @@ package com.wafflestudio.snugo.di
 
 import com.wafflestudio.snugo.features.onboarding.UserRepository
 import com.wafflestudio.snugo.features.onboarding.UserRepositoryImpl
+import com.wafflestudio.snugo.repository.BuildingsRepository
+import com.wafflestudio.snugo.repository.BuildingsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,4 +14,7 @@ import dagger.hilt.components.SingletonComponent
 abstract class RepositoryModule {
     @Binds
     abstract fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
+
+    @Binds
+    abstract fun bindBuildingsRepository(buildingsRepositoryImpl: BuildingsRepositoryImpl): BuildingsRepository
 }
