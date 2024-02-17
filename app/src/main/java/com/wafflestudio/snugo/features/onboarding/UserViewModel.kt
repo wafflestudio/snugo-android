@@ -54,6 +54,22 @@ class UserViewModel
             )
         }
 
+        /*private val _myRecords = MutableStateFlow<List<Record>>(listOf())
+        val myRecords = _myRecords.asStateFlow()
+        suspend fun getRecord(method: SortMethod){
+            when(method){
+                SortMethod.BASIC -> {
+                    _myRecords.value = api.getBasicRecord()
+                }
+                SortMethod.TOP -> {
+                    _myRecords.value = api.getTopRecord()
+                }
+                SortMethod.RECOMMEND -> {
+                    _myRecords.value = api.getRecommendedRecord()
+                }
+            }
+
+        }*/
         suspend fun signOut() {
             userRepository.signOut()
         }

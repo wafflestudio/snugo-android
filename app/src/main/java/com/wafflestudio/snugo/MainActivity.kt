@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -45,6 +46,7 @@ import com.wafflestudio.snugo.features.home.HomePageMode
 import com.wafflestudio.snugo.features.home.HomeScreen
 import com.wafflestudio.snugo.features.onboarding.SignUpScreen
 import com.wafflestudio.snugo.features.onboarding.UserViewModel
+import com.wafflestudio.snugo.features.records.RecordMap
 import com.wafflestudio.snugo.features.records.RecordsScreen
 import com.wafflestudio.snugo.features.settings.SettingsScreen
 import com.wafflestudio.snugo.location.LocationProvider
@@ -153,6 +155,16 @@ class MainActivity : AppCompatActivity() {
                                     route = NavigationDestination.Records.route,
                                 ) {
                                     RecordsScreen(
+                                        modifier = Modifier.padding(bottom = (80 - animatedOffsetDp).dp),
+                                        viewModel = hiltViewModel(),
+                                        navController = navController,
+                                    )
+                                }
+                                slideVerticalComposable(
+                                    route = NavigationDestination.RecordMap.route,
+                                ) {
+                                    RecordMap(
+                                        path = listOf(LatLng(36.0, 127.0), LatLng(36.0, 128.0), LatLng(37.0, 128.0), LatLng(37.0, 127.0)),
                                         modifier = Modifier.padding(bottom = (80 - animatedOffsetDp).dp),
                                     )
                                 }
