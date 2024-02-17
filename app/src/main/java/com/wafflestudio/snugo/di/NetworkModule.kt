@@ -3,8 +3,8 @@ package com.wafflestudio.snugo.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.naver.maps.map.BuildConfig
 import com.squareup.moshi.Moshi
+import com.wafflestudio.snugo.BuildConfig
 import com.wafflestudio.snugo.R
 import com.wafflestudio.snugo.network.SNUGORestApi
 import com.wafflestudio.snugo.repository.UserRepositoryImpl
