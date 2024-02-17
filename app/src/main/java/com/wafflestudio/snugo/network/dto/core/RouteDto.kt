@@ -8,8 +8,8 @@ data class RouteDto(
     val id: String,
     val buildings: List<BuildingDto>,
     val count: Long,
-    val avgPathLength: Long,
-    val avgTime: Long,
+    val avgPathLength: Double,
+    val avgTime: Double,
 ) {
     fun toRoute(): Route =
         Route(

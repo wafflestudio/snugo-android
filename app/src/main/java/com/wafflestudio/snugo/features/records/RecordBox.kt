@@ -1,5 +1,6 @@
 package com.wafflestudio.snugo.features.records
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,10 +51,11 @@ fun RecordBox(
     navController: NavController,
     boxClicked: () -> Unit,
 ) {
+    Log.d("aaaa","box")
     Box(
         modifier =
-            Modifier.background(Color.Yellow).padding(12.dp)
-                .fillMaxWidth().border(2.dp, Color.Magenta, RoundedCornerShape(10.dp))
+            Modifier.padding(12.dp)
+                .fillMaxWidth().border(2.dp, Color.Cyan, RoundedCornerShape(10.dp))
                 .clickable {
                     boxClicked()
                     // navController.navigate(NavigationDestination.RecordMap.route)

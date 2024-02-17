@@ -16,18 +16,14 @@ class RecordRepositoryImpl
     @Inject
     constructor(
         private val api: SNUGORestApi,
-        private val method: SortMethod
     ) : RecordRepository {
         override suspend fun getRecords(): Flow<PagingData<Record>> {
             return Pager(
                 config =
-                    PagingConfig(
-                        pageSize = 20,
-                        enablePlaceholders = false,
-                    ),
+                RecordPageSource.Config,
                 pagingSourceFactory = {
                     RecordPageSource(
-                        api, method
+                        api
                     )
                 },
             ).flow

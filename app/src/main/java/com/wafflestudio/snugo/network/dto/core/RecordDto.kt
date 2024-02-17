@@ -12,11 +12,11 @@ data class RecordDto(
     val id: String,
     val userId: String,
     val nickname: String,
-    val route: RouteDto,
+    @Json(name = "routeType") val route: RouteDto,
     val path: Map<String, LocationDto>,
     val startTime: Long,
     val duration: Long,
-    @Json(name = "high") val isHigh: Boolean,
+    @Json(name = "highscoreyn") val isHigh: Boolean,
 ) {
     fun toRecord(): Record =
         Record(

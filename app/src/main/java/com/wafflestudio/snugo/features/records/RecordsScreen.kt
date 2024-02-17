@@ -77,16 +77,18 @@ fun RecordsScreen(
             }
         }*/
 
+        Log.d("asdf", recordList.itemCount.toString())
         LazyColumn {
-            itemsIndexed(recordList) { idx, it ->
+            items(recordList.itemCount) {
                 /*Log.d("aaaa",idx.toString())
                 it ?: return@itemsIndexed*/
-                it?.let { 
+                recordList[it]?.let { record ->
+                    Log.d("aaaa", record.toString())
                     RecordBox(
-                        record = it,
+                        record = record,
                         navController = navController,
                         boxClicked = {
-                            boxIndex.value = idx
+                            boxIndex.value = it
                             recordState.value = RecordState.MAP
                         },
                     )

@@ -1,47 +1,39 @@
 package com.wafflestudio.snugo.features.records
 
+import android.util.Log
+import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wafflestudio.snugo.models.Record
-import com.wafflestudio.snugo.models.SortMethod
 import com.wafflestudio.snugo.network.SNUGORestApi
 import javax.inject.Inject
 
-class RecordPageSource
-    @Inject
-    constructor(
+class RecordPageSource(
         private val api: SNUGORestApi,
-        private val method: SortMethod
     ) : PagingSource<Int, Record>() {
         override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Record> {
-            val offset = params.key ?: 0
+            val page = params.key ?: START_PAGE
             return try {
+                Log.d("asdf", "page=$page")
                 val response =
-                    when(method){
-                        SortMethod.RECENT -> {
-                            api.getRecentRecord(
-                                page = offset,
-                                size = params.loadSize,
-                            )
-                        }
-                        SortMethod.NEWHIGH -> {
-                            api.getNewHighRecord(
-                                page = offset,
-                                size = params.loadSize,
-                            )
-                        }
-                        SortMethod.MY -> {
-                            api.getMyRecord(
-                                page = offset,
-                                size = params.loadSize
-                            )
-                        }
-                    }.result.map { it.toRecord() }
+                    api.getRecentRecord(
+                        page = page,
+                        size = params.loadSize,
+                    )
+
 
                 LoadResult.Page(
-                    data = response,
-                    prevKey = if (offset == 0) null else offset - params.loadSize,
-                    nextKey = if (response.isEmpty()) null else offset + params.loadSize,
+                    data = response.result.map{it.toRecord()},
+                    prevKey = if (page == START_PAGE) null else page - 1,
+                    nextKey = if (response.hasNext){
+                        if (page == START_PAGE) {
+                            page + params.loadSize / PAGE_SIZE
+                        } else {
+                            page + 1
+                        }
+                    } else {
+                        null
+                    }
                 )
             } catch (e: Exception) {
                 LoadResult.Error(e)
@@ -54,4 +46,10 @@ class RecordPageSource
                     ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
             }
         }
+
+    companion object {
+        private const val START_PAGE = 0
+        private const val PAGE_SIZE = 7
+        val Config = PagingConfig(pageSize = PAGE_SIZE)
+    }
     }

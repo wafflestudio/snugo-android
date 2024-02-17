@@ -1,5 +1,8 @@
 package com.wafflestudio.snugo.features.records
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -22,7 +25,7 @@ class RecordViewModel
     constructor(
         private val recordRepository: RecordRepository,
     ) : ViewModel() {
-
+        val method by mutableStateOf(SortMethod.RECENT)
         private val querySignal = MutableStateFlow(Unit)
 
         @OptIn(ExperimentalCoroutinesApi::class)
@@ -30,8 +33,7 @@ class RecordViewModel
             querySignal.flatMapLatest {
                 recordRepository.getRecords()
                     .cachedIn(viewModelScope)
-            }
-                .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
+            }.stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
 
         suspend fun fetchRecords() {
             querySignal.emit(Unit)
