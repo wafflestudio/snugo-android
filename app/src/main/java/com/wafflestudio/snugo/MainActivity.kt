@@ -3,7 +3,10 @@ package com.wafflestudio.snugo
 import android.app.ActivityManager
 import android.content.Context
 import android.os.Bundle
+import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnPreDrawListener
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -24,9 +27,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -41,6 +46,8 @@ import com.wafflestudio.snugo.features.home.HomePageMode
 import com.wafflestudio.snugo.features.home.HomeScreen
 import com.wafflestudio.snugo.features.onboarding.SignInScreen
 import com.wafflestudio.snugo.features.records.RecordMap
+import com.wafflestudio.snugo.features.onboarding.SignUpScreen
+import com.wafflestudio.snugo.features.onboarding.UserViewModel
 import com.wafflestudio.snugo.features.records.RecordsScreen
 import com.wafflestudio.snugo.features.settings.SettingsScreen
 import com.wafflestudio.snugo.location.LocationProvider
@@ -52,6 +59,8 @@ import com.wafflestudio.snugo.service.LocationService
 import com.wafflestudio.snugo.ui.theme.SnugoTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -60,9 +69,23 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var locationProvider: LocationProvider
 
+    private val userViewModel: UserViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         getLocationPermissions()
+
+        var loadFinished = false
+        val startDestination =
+            userViewModel.accessToken.filterNotNull().map {
+                loadFinished = true
+                if (it.isNotEmpty()) {
+                    NavigationDestination.Main.route
+                } else {
+                    NavigationDestination.Onboarding.route
+                }
+            }
 
         setContent {
             SnugoTheme {
@@ -81,6 +104,7 @@ class MainActivity : AppCompatActivity() {
                 var homePageMode by remember {
                     mutableStateOf(HomePageMode.NORMAL)
                 }
+                val startDestinationState by startDestination.collectAsState(initial = NavigationDestination.Onboarding.route)
 
                 CompositionLocalProvider(
                     LocalNavController provides navController,
@@ -90,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = NavigationDestination.Onboarding.route,
+                            startDestination = startDestinationState,
                             modifier = Modifier.fillMaxSize(),
                         ) {
                             navigation(
@@ -100,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                                 slideVerticalComposable(
                                     route = NavigationDestination.SignIn.route,
                                 ) {
-                                    SignInScreen()
+                                    SignUpScreen()
                                 }
                             }
 
@@ -175,6 +199,23 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        val rootView =
+            window.decorView
+                .findViewById<ViewGroup>(android.R.id.content)
+                .getChildAt(0) as ComposeView
+        rootView.viewTreeObserver.addOnPreDrawListener(
+            object : OnPreDrawListener {
+                override fun onPreDraw(): Boolean {
+                    return if (loadFinished) {
+                        rootView.viewTreeObserver.removeOnPreDrawListener(this)
+                        true
+                    } else {
+                        false
+                    }
+                }
+            },
+        )
     }
 }
 
@@ -226,7 +267,6 @@ fun NavController.navigateAsOrigin(route: String) {
             }
         }
         launchSingleTop = true
-        restoreState = true
     }
 }
 
