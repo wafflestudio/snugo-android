@@ -1,17 +1,24 @@
 package com.wafflestudio.snugo.features.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,12 +28,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.geometry.LatLngBounds
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
@@ -40,13 +50,20 @@ import com.naver.maps.map.compose.PathOverlay
 import com.naver.maps.map.compose.PolygonOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
+import com.wafflestudio.snugo.R
 import com.wafflestudio.snugo.location.MapConstants
 import com.wafflestudio.snugo.models.Section
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 enum class HomePageMode {
     NORMAL,
     MOVING,
+}
+
+enum class Point {
+    START,
+    END,
 }
 
 @OptIn(ExperimentalNaverMapApi::class)
@@ -60,12 +77,41 @@ fun HomeScreen(
 ) {
     val cameraPositionState = rememberCameraPositionState()
     val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
 
     val buildingsBySection by homeViewModel.buildingsBySection.collectAsState()
     var selectedSection by remember { mutableStateOf(Section.A) }
-    var selectedBuilding by remember { mutableStateOf(buildingsBySection[Section.A]?.first()) }
-    var pathCoords by remember {
-        mutableStateOf(emptyList<LatLng>())
+    val startBuilding by homeViewModel.startBuilding.collectAsState()
+    val endBuilding by homeViewModel.endBuilding.collectAsState()
+    var editingPoint by remember { mutableStateOf(Point.START) }
+
+    LaunchedEffect(startBuilding, endBuilding) {
+        val points =
+            listOfNotNull(
+                startBuilding?.location,
+                endBuilding?.location,
+            ).distinct()
+        if (points.isNotEmpty()) {
+            scope.launch {
+                cameraPositionState.animate(
+                    update =
+                        if (points.size == 1) {
+                            CameraUpdate.toCameraPosition(
+                                CameraPosition(
+                                    points.first(),
+                                    15.0,
+                                ),
+                            )
+                        } else {
+                            CameraUpdate.fitBounds(
+                                LatLngBounds.from(points),
+                                with(density) { 80.dp.toPx() }.roundToInt(),
+                            )
+                        },
+                    durationMs = 1000,
+                )
+            }
+        }
     }
 
     Column(
@@ -75,9 +121,6 @@ fun HomeScreen(
         NaverMap(
             modifier = Modifier.fillMaxHeight(0.55f),
             cameraPositionState = cameraPositionState,
-            onMapClick = { _, latLng ->
-                pathCoords = (pathCoords + latLng)
-            },
             locationSource = rememberFusedLocationSource(),
             properties =
                 MapProperties(
@@ -96,14 +139,6 @@ fun HomeScreen(
                 )
             }
 
-            if (pathCoords.size >= 2) {
-                PathOverlay(
-                    coords = pathCoords,
-                    width = 2.dp,
-                    color = Color.Red,
-                )
-            }
-
             PolygonOverlay(
                 coords = polygonMap[selectedSection]!!,
                 color =
@@ -112,7 +147,20 @@ fun HomeScreen(
                     ),
             )
 
-            selectedBuilding?.let {
+            startBuilding?.let {
+                Marker(
+                    captionText = it.name,
+                    state =
+                        MarkerState(
+                            position =
+                                CameraPosition(
+                                    it.location,
+                                    6.0,
+                                ).target,
+                        ),
+                )
+            }
+            endBuilding?.let {
                 Marker(
                     captionText = it.name,
                     state =
@@ -146,7 +194,85 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold,
                     ),
             )
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(7.dp),
+            ) {
+                Box(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(40.dp)
+                            .then(
+                                when (editingPoint) {
+                                    Point.START ->
+                                        Modifier.border(
+                                            width = 2.dp,
+                                            color = Color.Black,
+                                            shape = RoundedCornerShape(10.dp),
+                                        )
+
+                                    Point.END ->
+                                        Modifier.border(
+                                            width = 0.5.dp,
+                                            color = Color.LightGray,
+                                            shape = RoundedCornerShape(10.dp),
+                                        )
+                                },
+                            )
+                            .clickable {
+                                editingPoint = Point.START
+                            },
+                ) {
+                    Text(
+                        text = startBuilding?.name ?: "출발지 선택",
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                }
+                Icon(
+                    painter = painterResource(R.drawable.ic_arrow_right),
+                    contentDescription = "right arrow",
+                    modifier = Modifier.size(30.dp),
+                    tint = Color.LightGray,
+                )
+                Box(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(40.dp)
+                            .then(
+                                when (editingPoint) {
+                                    Point.END ->
+                                        Modifier.border(
+                                            width = 2.dp,
+                                            color = Color.Black,
+                                            shape = RoundedCornerShape(10.dp),
+                                        )
+
+                                    Point.START ->
+                                        Modifier.border(
+                                            width = 0.5.dp,
+                                            color = Color.LightGray,
+                                            shape = RoundedCornerShape(10.dp),
+                                        )
+                                },
+                            )
+                            .clickable {
+                                editingPoint = Point.END
+                            },
+                ) {
+                    Text(
+                        text = endBuilding?.name ?: "도착지 선택",
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
                 Column(
                     modifier = Modifier.weight(1f),
                 ) {
@@ -163,7 +289,6 @@ fun HomeScreen(
                         },
                     )
                 }
-                Spacer(modifier = Modifier.width(30.dp))
                 Column(
                     modifier = Modifier.weight(1f),
                 ) {
@@ -174,19 +299,16 @@ fun HomeScreen(
                     ScrollPicker(
                         items = buildingsBySection[selectedSection]?.map { it.name } ?: emptyList(),
                         onItemSelected = { index ->
-                            selectedBuilding = buildingsBySection[selectedSection]?.get(index)
-                            selectedBuilding?.let {
-                                scope.launch {
-                                    cameraPositionState.animate(
-                                        update =
-                                            CameraUpdate.toCameraPosition(
-                                                CameraPosition(
-                                                    it.location,
-                                                    15.0,
-                                                ),
-                                            ),
-                                        durationMs = 1000,
-                                    )
+                            when (editingPoint) {
+                                Point.START -> {
+                                    buildingsBySection[selectedSection]?.get(index)?.let {
+                                        homeViewModel.setStartBuilding(it)
+                                    }
+                                }
+                                Point.END -> {
+                                    buildingsBySection[selectedSection]?.get(index)?.let {
+                                        homeViewModel.setEndBuilding(it)
+                                    }
                                 }
                             }
                         },
