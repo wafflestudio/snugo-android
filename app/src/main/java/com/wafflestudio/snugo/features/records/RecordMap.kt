@@ -16,7 +16,10 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun RecordMap(modifier: Modifier = Modifier, path: List<LatLng>){
+fun RecordMap(
+    modifier: Modifier = Modifier,
+    path: List<LatLng>,
+)  {
     val cameraPositionState = rememberCameraPositionState()
     NaverMap(
         modifier = Modifier,
