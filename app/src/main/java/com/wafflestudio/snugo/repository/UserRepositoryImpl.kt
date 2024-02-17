@@ -1,4 +1,4 @@
-package com.wafflestudio.snugo.features.onboarding
+package com.wafflestudio.snugo.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

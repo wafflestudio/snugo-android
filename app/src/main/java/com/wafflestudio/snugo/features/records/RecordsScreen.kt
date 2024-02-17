@@ -8,8 +8,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.naver.maps.geometry.LatLng
 import com.wafflestudio.snugo.features.onboarding.UserViewModel
+import com.wafflestudio.snugo.models.Record
 
 @Composable
 fun RecordsScreen(
@@ -19,16 +19,20 @@ fun RecordsScreen(
 ) {
     val recordState = remember { mutableStateOf(RecordState.BOX) }
     val boxIndex = remember { mutableStateOf(0) }
-    val record1 =
-        Record(
-            "id",
-            "nickname",
-            listOf(Building(1), Building(2), Building(3)),
-            listOf(Pair(20L, LatLng(37.465, 126.95)), Pair(40L, LatLng(36.466, 127.951))),
-            System.currentTimeMillis(),
-            6109789L,
-        )
-    val recordList = listOf(record1)
+//    val record1 =
+//        Record(
+//            "id",
+//            "dummyuser",
+//            "nickname",
+//            listOf(
+//                Building(id = "", name = "asdf", location = LatLng(0,0), section = Section.A),
+//                Building(id = "", name = "asdf", location = LatLng(0,0), section = Section.A)
+//            ),
+//            listOf(Pair(20L, LatLng(37.465, 126.95)), Pair(40L, LatLng(36.466, 127.951))),
+//            System.currentTimeMillis(),
+//            6109789L,
+//        )
+    val recordList = emptyList<Record>()
     /*val recordList = viewModel.myRecords.collectAsState().value
     LaunchedEffect(Unit){
         viewModel.getRecord(SortMethod.BASIC)
@@ -49,6 +53,8 @@ fun RecordsScreen(
         }
     } else {
         Log.d("aaaa", "changed")
-        RecordMap(path = recordList[boxIndex.value].path.map { it.second })
+        if (recordList.isNotEmpty()) {
+            RecordMap(path = recordList[boxIndex.value].path.values.toList())
+        }
     }
 }

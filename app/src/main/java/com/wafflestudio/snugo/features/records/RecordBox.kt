@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.wafflestudio.snugo.models.Record
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -66,9 +67,9 @@ fun RecordBox(
             /*Text(record.id)
             Text(record.nickname)*/
             Row {
-                record.buildings.mapIndexed { index, building ->
+                record.route.buildings.mapIndexed { index, building ->
                     var addText = "동 -> "
-                    if (index + 1 == record.buildings.size) {
+                    if (index + 1 == record.route.buildings.size) {
                         addText = "동"
                     }
                     Text(building.id.toString() + addText)

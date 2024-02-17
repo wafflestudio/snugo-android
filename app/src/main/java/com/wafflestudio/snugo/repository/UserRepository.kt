@@ -1,4 +1,4 @@
-package com.wafflestudio.snugo.features.onboarding
+package com.wafflestudio.snugo.repository
 
 import kotlinx.coroutines.flow.Flow
 
