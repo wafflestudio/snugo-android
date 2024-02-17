@@ -159,8 +159,7 @@ class MainActivity : AppCompatActivity() {
                                 ) {
                                     RecordsScreen(
                                         modifier = Modifier.padding(bottom = (80 - animatedOffsetDp).dp),
-                                        viewModel = hiltViewModel(),
-                                        navController = navController,
+                                        userViewModel = hiltViewModel(),
                                     )
                                 }
                                 slideVerticalComposable(

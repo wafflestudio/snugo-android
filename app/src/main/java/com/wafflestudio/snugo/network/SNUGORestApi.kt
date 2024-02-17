@@ -1,10 +1,11 @@
 package com.wafflestudio.snugo.network
 
-import com.wafflestudio.snugo.models.Route
 import com.wafflestudio.snugo.network.dto.GetBuildingResponse
 import com.wafflestudio.snugo.network.dto.GetBuildingsBySectionResponse
 import com.wafflestudio.snugo.network.dto.GetBuildingsResponse
 import com.wafflestudio.snugo.network.dto.GetDepartmentsResponse
+import com.wafflestudio.snugo.network.dto.GetRecentRecordsRequestBody
+import com.wafflestudio.snugo.network.dto.GetRecentRecordsResponse
 import com.wafflestudio.snugo.network.dto.PostSignUpRequestBody
 import com.wafflestudio.snugo.network.dto.PostSignUpResponse
 import com.wafflestudio.snugo.network.dto.core.GetRecordDto
@@ -67,4 +68,9 @@ interface SNUGORestApi {
         @Query("page") page: Int,
         @Query("size") size: Int,
     ): GetRecordDto
+
+    @GET("/v1/record/recent")
+    suspend fun getRecentRecords(
+        @Body body: GetRecentRecordsRequestBody,
+    ): GetRecentRecordsResponse
 }

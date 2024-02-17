@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 enum class SortMethod {
     RECENT,
     NEWHIGH,
-    MY
+    MY,
 }
 
 enum class RecordState {
