@@ -16,7 +16,7 @@ class UserViewModel
     constructor(
         private val userRepository: UserRepository,
     ) : ViewModel() {
-        private val _departments = MutableStateFlow<List<String>>(emptyList())
+        private val _departments = MutableStateFlow<List<String>>(listOf("단과대학 선택"))
         val departments: StateFlow<List<String>> get() = _departments
 
         val accessToken: StateFlow<String?> =
