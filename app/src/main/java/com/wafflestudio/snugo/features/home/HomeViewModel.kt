@@ -26,6 +26,12 @@ class HomeViewModel
                 it.groupBy { building -> building.section }
             }.stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = emptyMap())
 
+        private val _startBuilding = MutableStateFlow<Building?>(null)
+        val startBuilding: StateFlow<Building?> get() = _startBuilding
+
+        private val _endBuilding = MutableStateFlow<Building?>(null)
+        val endBuilding: StateFlow<Building?> get() = _endBuilding
+
         init {
             viewModelScope.launch {
                 getBuildings()
@@ -34,5 +40,13 @@ class HomeViewModel
 
         suspend fun getBuildings() {
             buildings.value = buildingsRepository.getBuildings()
+        }
+
+        fun setStartBuilding(building: Building) {
+            _startBuilding.value = building
+        }
+
+        fun setEndBuilding(building: Building) {
+            _endBuilding.value = building
         }
     }
