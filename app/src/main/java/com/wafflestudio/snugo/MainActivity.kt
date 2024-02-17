@@ -43,7 +43,7 @@ import com.naver.maps.geometry.LatLng
 import com.wafflestudio.snugo.features.arrivaldetail.ArrivalDetailScreen
 import com.wafflestudio.snugo.features.home.HomePageMode
 import com.wafflestudio.snugo.features.home.HomeScreen
-import com.wafflestudio.snugo.features.onboarding.SignInScreen
+import com.wafflestudio.snugo.features.onboarding.SignUpScreen
 import com.wafflestudio.snugo.features.onboarding.UserViewModel
 import com.wafflestudio.snugo.features.records.RecordsScreen
 import com.wafflestudio.snugo.features.settings.SettingsScreen
@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                                 slideVerticalComposable(
                                     route = NavigationDestination.SignIn.route,
                                 ) {
-                                    SignInScreen()
+                                    SignUpScreen()
                                 }
                             }
 
@@ -254,7 +254,6 @@ fun NavController.navigateAsOrigin(route: String) {
             }
         }
         launchSingleTop = true
-        restoreState = true
     }
 }
 
