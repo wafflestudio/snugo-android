@@ -1,9 +1,15 @@
 package com.wafflestudio.snugo.features.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,8 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.geometry.LatLngBounds
-import com.naver.maps.map.CameraAnimation
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
@@ -59,16 +63,17 @@ fun HomeScreen(
 
     val buildingsBySection by homeViewModel.buildingsBySection.collectAsState()
     var selectedSection by remember { mutableStateOf(Section.A) }
+    var selectedBuilding by remember { mutableStateOf(buildingsBySection[Section.A]?.first()) }
     var pathCoords by remember {
         mutableStateOf(emptyList<LatLng>())
     }
 
     Column(
-        modifier = modifier.padding(20.dp),
+        modifier = modifier.background(Color.White),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         NaverMap(
-            modifier = Modifier.weight(0.7f),
+            modifier = Modifier.fillMaxHeight(0.55f),
             cameraPositionState = cameraPositionState,
             onMapClick = { _, latLng ->
                 pathCoords = (pathCoords + latLng)
@@ -107,25 +112,28 @@ fun HomeScreen(
                     ),
             )
 
-            buildingsBySection[selectedSection]?.forEach { building ->
+            selectedBuilding?.let {
                 Marker(
-                    captionText = building.name,
+                    captionText = it.name,
                     state =
                         MarkerState(
                             position =
                                 CameraPosition(
-                                    building.location,
+                                    it.location,
                                     6.0,
                                 ).target,
                         ),
                 )
             }
         }
-        Row(modifier = Modifier.weight(0.3f)) {
+        Column(
+            modifier = Modifier.padding(horizontal = 20.dp),
+        ) {
             Text(
                 text = "기록 시작",
                 modifier =
                     Modifier
+                        .align(Alignment.CenterHorizontally)
                         .padding(15.dp)
                         .clickable {
                             if (pageMode == HomePageMode.NORMAL) {
@@ -138,24 +146,53 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold,
                     ),
             )
-            SectionPicker(
-                onSectionSelected = { section ->
-                    scope.launch {
-                        val latLngs = polygonMap[section]!!
-                        selectedSection = section
-                        cameraPositionState.animate(
-                            CameraUpdate.fitBounds(
-                                LatLngBounds.from(
-                                    latLngs + latLngs.first(),
-                                ),
-                                40,
-                            ),
-                            animation = CameraAnimation.Fly,
-                            durationMs = 1000,
-                        )
-                    }
-                },
-            )
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(
+                        text = "구역",
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    ScrollPicker(
+                        items = Section.entries.map { it.toString() },
+                        onItemSelected = { index ->
+                            scope.launch {
+                                selectedSection = Section.entries[index]
+                            }
+                        },
+                    )
+                }
+                Spacer(modifier = Modifier.width(30.dp))
+                Column(
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Text(
+                        text = "건물",
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    ScrollPicker(
+                        items = buildingsBySection[selectedSection]?.map { it.name } ?: emptyList(),
+                        onItemSelected = { index ->
+                            selectedBuilding = buildingsBySection[selectedSection]?.get(index)
+                            selectedBuilding?.let {
+                                scope.launch {
+                                    cameraPositionState.animate(
+                                        update =
+                                            CameraUpdate.toCameraPosition(
+                                                CameraPosition(
+                                                    it.location,
+                                                    15.0,
+                                                ),
+                                            ),
+                                        durationMs = 1000,
+                                    )
+                                }
+                            }
+                        },
+                    )
+                }
+            }
         }
     }
 }

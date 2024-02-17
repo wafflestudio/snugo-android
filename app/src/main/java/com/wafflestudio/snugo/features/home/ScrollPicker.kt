@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,10 +19,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.naver.maps.geometry.LatLng
 import com.wafflestudio.snugo.models.Section
 import kotlinx.coroutines.flow.filter
@@ -260,14 +258,14 @@ fun Section.color(): Color =
     }
 
 @Composable
-fun SectionPicker(
-    onSectionSelected: (Section) -> Unit,
+fun ScrollPicker(
+    items: List<String>,
+    onItemSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val lazyListState = rememberLazyListState()
 
-    LaunchedEffect(Unit) {
-        lazyListState.scrollToItem(0)
+    LaunchedEffect(items) {
         snapshotFlow { lazyListState.isScrollInProgress }
             .filter { it.not() }
             .collect {
@@ -275,7 +273,7 @@ fun SectionPicker(
                     lazyListState.layoutInfo.visibleItemsInfo.find {
                         it.offset == 0
                     }?.index ?: 0
-                onSectionSelected(Section.entries[selectedIndex])
+                onItemSelected(selectedIndex)
             }
     }
 
@@ -284,26 +282,24 @@ fun SectionPicker(
             state = lazyListState,
             modifier =
                 modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp)
-                    .height(SectionPickerConstants.ITEM_HEIGHT_DP.dp * 3),
+                    .height(PickerConstants.ITEM_HEIGHT_DP.dp * 3),
             flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState),
-            contentPadding = PaddingValues(vertical = SectionPickerConstants.ITEM_HEIGHT_DP.dp),
+            contentPadding = PaddingValues(vertical = PickerConstants.ITEM_HEIGHT_DP.dp),
         ) {
-            items(Section.entries.map { it.name }) {
+            items(items) {
                 Box(
                     modifier =
                         Modifier
-                            .height(SectionPickerConstants.ITEM_HEIGHT_DP.dp),
+                            .padding(horizontal = 10.dp)
+                            .height(PickerConstants.ITEM_HEIGHT_DP.dp),
                 ) {
                     Text(
                         text = it,
-                        modifier = Modifier.align(Alignment.Center),
-                        style =
-                            TextStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp,
-                            ),
+                        modifier =
+                            Modifier
+                                .align(Alignment.Center)
+                                .fillMaxWidth(),
+                        style = MaterialTheme.typography.titleMedium,
                     )
                 }
             }
@@ -313,7 +309,7 @@ fun SectionPicker(
                 Modifier
                     .align(Alignment.Center)
                     .fillMaxWidth()
-                    .height(SectionPickerConstants.ITEM_HEIGHT_DP.dp)
+                    .height(PickerConstants.ITEM_HEIGHT_DP.dp)
                     .background(
                         color = Color.LightGray.copy(alpha = 0.3f),
                         shape = RoundedCornerShape(10.dp),
