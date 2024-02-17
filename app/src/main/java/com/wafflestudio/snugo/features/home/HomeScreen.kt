@@ -47,8 +47,8 @@ fun HomeScreen(
 
     Column(
         modifier =
-            modifier
-                .padding(20.dp),
+        modifier
+            .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         NaverMap(
@@ -56,7 +56,7 @@ fun HomeScreen(
             cameraPositionState = cameraPositionState,
             locationSource = rememberFusedLocationSource(),
             onMapClick = { _, latLng ->
-                 list = (list + latLng).toMutableList()
+                list = (list + latLng).toMutableList()
             },
             properties = MapProperties(locationTrackingMode = LocationTrackingMode.Follow),
             uiSettings = MapUiSettings(isLocationButtonEnabled = true),
@@ -70,7 +70,7 @@ fun HomeScreen(
                     outlineColor = Color.Green,
                 )
             }
-            if (list.size >=2 ) {
+            if (list.size >= 2) {
                 PathOverlay(
                     coords = list,
                     width = 3.dp,
@@ -89,10 +89,10 @@ fun HomeScreen(
                     }
                 },
             style =
-                TextStyle(
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
+            TextStyle(
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+            ),
         )
         Text(
             text = "로그",
@@ -100,7 +100,7 @@ fun HomeScreen(
             Modifier
                 .padding(15.dp)
                 .clickable {
-                    Log.d("aaaa", list.fold("") {acc, latLng ->
+                    Log.d("aaaa", list.fold("") { acc, latLng ->
                         acc + ", LatLng(${latLng.latitude}, ${latLng.longitude})"
                     })
                 },
