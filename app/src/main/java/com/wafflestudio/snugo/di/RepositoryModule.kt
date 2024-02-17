@@ -4,6 +4,8 @@ import com.wafflestudio.snugo.features.home.LocationRepository
 import com.wafflestudio.snugo.features.home.LocationRepositoryImpl
 import com.wafflestudio.snugo.repository.BuildingsRepository
 import com.wafflestudio.snugo.repository.BuildingsRepositoryImpl
+import com.wafflestudio.snugo.repository.RecordRepository
+import com.wafflestudio.snugo.repository.RecordRepositoryImpl
 import com.wafflestudio.snugo.repository.UserRepository
 import com.wafflestudio.snugo.repository.UserRepositoryImpl
 import dagger.Binds
@@ -22,4 +24,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindLocationRepository(locationRepositoryImpl: LocationRepositoryImpl): LocationRepository
+
+    @Binds
+    abstract fun bindRecordRepository(recordRepositoryImpl: RecordRepositoryImpl): RecordRepository
 }

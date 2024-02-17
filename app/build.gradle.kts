@@ -110,8 +110,8 @@ dependencies {
     implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
 
     //paging
-    implementation("androidx.paging:paging-runtime:3.2.1")
-    implementation("androidx.paging:paging-compose:3.2.1")
+    implementation("androidx.paging:paging-runtime-ktx:3.1.0")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha14")
 }
 
 kapt {

@@ -1,18 +1,43 @@
 package com.wafflestudio.snugo.features.records
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.wafflestudio.snugo.models.Record
+import com.wafflestudio.snugo.models.SortMethod
+import com.wafflestudio.snugo.repository.RecordRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import java.lang.Record
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+@HiltViewModel
 class RecordViewModel @Inject constructor(
-    private val repository: RecordRepository
+    private val recordRepository: RecordRepository
 ): ViewModel(){
-    private val _myRecords = MutableStateFlow<List<Record>>(listOf())
-    val myRecords = _myRecords.asStateFlow()
+
+    private val querySignal = MutableStateFlow(Unit)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val myRecords: StateFlow<PagingData<Record>> = querySignal.flatMapLatest {
+        recordRepository.getRecentRecords()
+            .cachedIn(viewModelScope)
+    }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
+
+    suspend fun fetchRecords() {
+        querySignal.emit(Unit)
+    }
+
     suspend fun getRecord(method: SortMethod){
-        when(method){
+
+        /*when(method){
             SortMethod.BASIC -> {
                 _myRecords.value = api.getBasicRecord()
             }
@@ -22,7 +47,7 @@ class RecordViewModel @Inject constructor(
             SortMethod.RECOMMEND -> {
                 _myRecords.value = api.getRecommendedRecord()
             }
-        }
+        }*/
 
     }
 }

@@ -6,10 +6,13 @@ import com.wafflestudio.snugo.network.dto.GetBuildingsResponse
 import com.wafflestudio.snugo.network.dto.GetDepartmentsResponse
 import com.wafflestudio.snugo.network.dto.PostSignUpRequestBody
 import com.wafflestudio.snugo.network.dto.PostSignUpResponse
+import com.wafflestudio.snugo.network.dto.core.GetRecordDto
+import com.wafflestudio.snugo.network.dto.core.RecordDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface SNUGORestApi {
     @GET("/v1/departments")
@@ -32,4 +35,10 @@ interface SNUGORestApi {
     suspend fun getBuildingsBySection(
         @Path("section") section: String,
     ): GetBuildingsBySectionResponse
+
+    @GET("v1/record/recent")
+    suspend fun getRecentRecord(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ) : GetRecordDto
 }
