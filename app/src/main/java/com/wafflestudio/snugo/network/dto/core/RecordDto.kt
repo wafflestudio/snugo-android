@@ -18,19 +18,21 @@ data class RecordDto(
     val duration: Long,
     @Json(name = "high") val isHigh: Boolean,
 ) {
-    fun toRecord(): Record = Record(
-        id = id,
-        userId = userId,
-        nickname = nickname,
-        route = route.toRoute(),
-        path = path.entries.associate {
-            LocalDateTime.ofInstant(
-                Instant.ofEpochMilli(it.key.toLong()),
-                ZoneId.systemDefault()
-            ) to it.value.toLatLng()
-        },
-        startTime = startTime,
-        duration = duration,
-        isHigh = isHigh,
-    )
+    fun toRecord(): Record =
+        Record(
+            id = id,
+            userId = userId,
+            nickname = nickname,
+            route = route.toRoute(),
+            path =
+                path.entries.associate {
+                    LocalDateTime.ofInstant(
+                        Instant.ofEpochMilli(it.key.toLong()),
+                        ZoneId.systemDefault(),
+                    ) to it.value.toLatLng()
+                },
+            startTime = startTime,
+            duration = duration,
+            isHigh = isHigh,
+        )
 }

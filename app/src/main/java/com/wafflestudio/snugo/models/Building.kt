@@ -6,5 +6,5 @@ data class Building(
     val id: String,
     val name: String,
     val location: LatLng,
-    val section: Section
+    val section: Section,
 )

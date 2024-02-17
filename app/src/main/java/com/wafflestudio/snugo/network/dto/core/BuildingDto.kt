@@ -9,12 +9,13 @@ data class BuildingDto(
     val id: String,
     val name: String,
     val location: LocationDto,
-    val section: String
+    val section: String,
 ) {
-    fun toBuilding(): Building = Building(
-        id = id,
-        name = name,
-        location = location.toLatLng(),
-        section = Section.valueOf(section)
-    )
+    fun toBuilding(): Building =
+        Building(
+            id = id,
+            name = name,
+            location = location.toLatLng(),
+            section = Section.valueOf(section),
+        )
 }

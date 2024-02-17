@@ -1,10 +1,21 @@
 package com.wafflestudio.snugo.models
 
 enum class Section {
-    A, B, C, D, E, F, G, H, I, J, K;
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    I,
+    J,
+    K,
+    ;
 
     override fun toString(): String {
-        return when(this) {
+        return when (this) {
             A -> "A"
             B -> "B"
             C -> "C"

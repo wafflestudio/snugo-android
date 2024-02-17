@@ -11,11 +11,12 @@ data class RouteDto(
     val avgPathLength: Long,
     val avgTime: Long,
 ) {
-    fun toRoute(): Route = Route(
-        id = id,
-        buildings = buildings.map { it.toBuilding() },
-        count = count,
-        averagePathLength = avgPathLength,
-        averageTime = avgTime,
-    )
+    fun toRoute(): Route =
+        Route(
+            id = id,
+            buildings = buildings.map { it.toBuilding() },
+            count = count,
+            averagePathLength = avgPathLength,
+            averageTime = avgTime,
+        )
 }
