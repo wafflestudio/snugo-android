@@ -3,7 +3,6 @@ package com.wafflestudio.snugo.di
 import android.content.Context
 import com.naver.maps.map.BuildConfig
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.wafflestudio.snugo.R
 import com.wafflestudio.snugo.network.SNUGORestApi
 import dagger.Module
@@ -19,13 +18,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
-    @Provides
-    fun provideMoshi(): Moshi {
-        return Moshi.Builder()
-            .add(KotlinJsonAdapterFactory())
-            .build()
-    }
-
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
