@@ -26,29 +26,31 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class TokenHolder @Inject constructor(
-    dataStore: DataStore<Preferences>,
-    externalScope: CoroutineScope
-) {
-    val accessToken: StateFlow<String?> = dataStore.data.map { it[UserRepositoryImpl.ACCESS_TOKEN] ?: "" }
-        .stateIn(externalScope, SharingStarted.Eagerly, null)
-}
+class TokenHolder
+    @Inject
+    constructor(
+        dataStore: DataStore<Preferences>,
+        externalScope: CoroutineScope,
+    ) {
+        val accessToken: StateFlow<String?> =
+            dataStore.data.map { it[UserRepositoryImpl.ACCESS_TOKEN] ?: "" }
+                .stateIn(externalScope, SharingStarted.Eagerly, null)
+    }
 
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
     @Provides
-    fun provideOkHttpClient(
-        tokenHolder: TokenHolder
-    ): OkHttpClient {
+    fun provideOkHttpClient(tokenHolder: TokenHolder): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
-                val newRequest = chain.request().newBuilder()
-                    .addHeader(
-                        "Authorization",
-                        "Bearer ${tokenHolder.accessToken.value}"
-                    )
-                    .build()
+                val newRequest =
+                    chain.request().newBuilder()
+                        .addHeader(
+                            "Authorization",
+                            "Bearer ${tokenHolder.accessToken.value}",
+                        )
+                        .build()
                 chain.proceed(newRequest)
             }
             .addNetworkInterceptor(

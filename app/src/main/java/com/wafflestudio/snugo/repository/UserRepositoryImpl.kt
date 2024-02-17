@@ -6,12 +6,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.wafflestudio.snugo.network.SNUGORestApi
 import com.wafflestudio.snugo.network.dto.PostSignUpRequestBody
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,7 +17,6 @@ class UserRepositoryImpl
     constructor(
         private val api: SNUGORestApi,
         private val dataStore: DataStore<Preferences>,
-        private val externalScope: CoroutineScope,
     ) : UserRepository {
         override val accessToken: Flow<String?> = dataStore.data.map { it[ACCESS_TOKEN] ?: "" }
 

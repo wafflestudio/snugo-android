@@ -52,7 +52,7 @@ fun HomeScreen(
     pageMode: HomePageMode,
     path: List<LatLng>,
     startMoving: () -> Unit,
-    homeViewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
     val cameraPositionState = rememberCameraPositionState()
     val scope = rememberCoroutineScope()
@@ -110,12 +110,14 @@ fun HomeScreen(
             buildingsBySection[selectedSection]?.forEach { building ->
                 Marker(
                     captionText = building.name,
-                    state = MarkerState(
-                        position = CameraPosition(
-                            building.location,
-                            6.0
-                        ).target
-                    )
+                    state =
+                        MarkerState(
+                            position =
+                                CameraPosition(
+                                    building.location,
+                                    6.0,
+                                ).target,
+                        ),
                 )
             }
         }
@@ -123,13 +125,13 @@ fun HomeScreen(
             Text(
                 text = "기록 시작",
                 modifier =
-                Modifier
-                    .padding(15.dp)
-                    .clickable {
-                        if (pageMode == HomePageMode.NORMAL) {
-                            startMoving()
-                        }
-                    },
+                    Modifier
+                        .padding(15.dp)
+                        .clickable {
+                            if (pageMode == HomePageMode.NORMAL) {
+                                startMoving()
+                            }
+                        },
                 style =
                     TextStyle(
                         fontSize = 24.sp,

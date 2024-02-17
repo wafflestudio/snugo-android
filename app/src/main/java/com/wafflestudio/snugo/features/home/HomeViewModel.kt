@@ -15,22 +15,24 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val buildingsRepository: BuildingsRepository,
-) : ViewModel() {
+class HomeViewModel
+    @Inject
+    constructor(
+        private val buildingsRepository: BuildingsRepository,
+    ) : ViewModel() {
+        private val buildings = MutableStateFlow<List<Building>>(emptyList())
+        val buildingsBySection: StateFlow<Map<Section, List<Building>>> =
+            buildings.map {
+                it.groupBy { building -> building.section }
+            }.stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = emptyMap())
 
-    private val _buildings = MutableStateFlow<List<Building>>(emptyList())
-    val buildingsBySection: StateFlow<Map<Section, List<Building>>> = _buildings.map {
-        it.groupBy { building -> building.section }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, initialValue = emptyMap())
+        init {
+            viewModelScope.launch {
+                getBuildings()
+            }
+        }
 
-    init {
-        viewModelScope.launch {
-            getBuildings()
+        suspend fun getBuildings() {
+            buildings.value = buildingsRepository.getBuildings()
         }
     }
-
-    suspend fun getBuildings() {
-        _buildings.value = buildingsRepository.getBuildings()
-    }
-}
