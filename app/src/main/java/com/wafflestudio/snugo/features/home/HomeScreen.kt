@@ -31,8 +31,8 @@ import com.naver.maps.map.compose.PathOverlay
 import com.naver.maps.map.compose.PolygonOverlay
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
-import kotlinx.coroutines.launch
 import com.wafflestudio.snugo.location.MapConstants
+import kotlinx.coroutines.launch
 
 enum class HomePageMode {
     NORMAL,
