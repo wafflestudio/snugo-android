@@ -7,7 +7,6 @@ import com.wafflestudio.snugo.network.dto.GetDepartmentsResponse
 import com.wafflestudio.snugo.network.dto.PostSignUpRequestBody
 import com.wafflestudio.snugo.network.dto.PostSignUpResponse
 import com.wafflestudio.snugo.network.dto.core.GetRecordDto
-import com.wafflestudio.snugo.network.dto.core.RecordDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -40,5 +39,5 @@ interface SNUGORestApi {
     suspend fun getRecentRecord(
         @Query("page") page: Int,
         @Query("size") size: Int,
-    ) : GetRecordDto
+    ): GetRecordDto
 }

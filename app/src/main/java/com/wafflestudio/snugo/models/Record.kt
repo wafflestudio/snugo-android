@@ -13,6 +13,7 @@ enum class RecordState {
     BOX,
     MAP,
 }
+
 data class Record(
     val id: String,
     val userId: String,

@@ -9,12 +9,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import androidx.paging.compose.itemsIndexed
-import com.wafflestudio.snugo.features.onboarding.UserViewModel
-import com.wafflestudio.snugo.models.Record
 
 @Composable
 fun RecordsScreen(
@@ -22,10 +18,10 @@ fun RecordsScreen(
     viewModel: RecordViewModel,
     navController: NavController,
 ) {
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.fetchRecords()
     }
-    Log.d("aaaa","fetched")
+    Log.d("aaaa", "fetched")
     val recordState = remember { mutableStateOf(RecordState.BOX) }
     val boxIndex = remember { mutableStateOf(0) }
 //    val record1 =
@@ -47,7 +43,7 @@ fun RecordsScreen(
         viewModel.getRecord(SortMethod.BASIC)
     }*/
     if (recordState.value == RecordState.BOX) {
-        Log.d("aaaa",recordList.itemCount.toString())
+        Log.d("aaaa", recordList.itemCount.toString())
         LazyColumn {
             itemsIndexed(recordList) { idx, it ->
                 /*Log.d("aaaa",idx.toString())
@@ -62,7 +58,6 @@ fun RecordsScreen(
                         },
                     )
                 }
-
             }
         }
     } else {

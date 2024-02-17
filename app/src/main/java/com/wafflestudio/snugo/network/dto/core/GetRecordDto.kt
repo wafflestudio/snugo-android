@@ -7,5 +7,5 @@ import com.squareup.moshi.JsonClass
 data class GetRecordDto(
     @Json(name = "result") val result: List<RecordDto>,
     @Json(name = "total_count") val total_count: Int,
-    @Json(name = "hasNext") val hasNext: Boolean
-    )
+    @Json(name = "hasNext") val hasNext: Boolean,
+)

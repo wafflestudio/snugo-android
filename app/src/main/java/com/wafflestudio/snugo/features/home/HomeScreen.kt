@@ -62,7 +62,7 @@ fun HomeScreen(
     var pathCoords by remember {
         mutableStateOf(emptyList<LatLng>())
     }
-    
+
     Column(
         modifier = modifier.padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -90,7 +90,7 @@ fun HomeScreen(
                     outlineColor = Color.Green,
                 )
             }
-    
+
             if (pathCoords.size >= 2) {
                 PathOverlay(
                     coords = pathCoords,
@@ -98,7 +98,7 @@ fun HomeScreen(
                     color = Color.Red,
                 )
             }
-    
+
             PolygonOverlay(
                 coords = polygonMap[selectedSection]!!,
                 color =
