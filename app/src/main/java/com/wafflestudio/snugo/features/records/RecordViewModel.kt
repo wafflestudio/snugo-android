@@ -35,11 +35,12 @@ class RecordViewModel
                     .cachedIn(viewModelScope)
             }.stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
 
+    val recentRecords: StateFlow<PagingData<Record>> = querySignal.flatMapLatest {
+        recordRepository.getPagedMyRecords()
+            .cachedIn(viewModelScope)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
+
         suspend fun fetchRecords() {
             querySignal.emit(Unit)
-        }
-
-        fun getPagedMyRecords(): Flow<PagingData<Record>> {
-            return recordRepository.getPagedMyRecords()
         }
     }
