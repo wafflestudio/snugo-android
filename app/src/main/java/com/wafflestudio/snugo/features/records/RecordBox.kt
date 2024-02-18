@@ -1,19 +1,23 @@
 package com.wafflestudio.snugo.features.records
 
-import androidx.compose.foundation.background
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.wafflestudio.snugo.models.Record
 import java.text.SimpleDateFormat
@@ -50,42 +54,44 @@ fun RecordBox(
     navController: NavController,
     boxClicked: () -> Unit,
 ) {
-    Box(
+    Log.d("aaaa", "box")
+    Column(
         modifier =
-            Modifier.background(Color.Yellow).padding(12.dp)
-                .fillMaxWidth().border(2.dp, Color.Magenta, RoundedCornerShape(10.dp))
+            Modifier.padding(12.dp)
+                .fillMaxWidth().border(2.dp, Color.Cyan, RoundedCornerShape(10.dp))
                 .clickable {
                     boxClicked()
                     // navController.navigate(NavigationDestination.RecordMap.route)
                 },
     ) {
-        Column(
-            modifier = Modifier,
+        val duration = durationToString(record.duration)
+        Text(
+            text = record.nickname,
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Row(
+            modifier = Modifier.height(100.dp),
         ) {
-            val startTime = convertLongToTime(record.startTime)
-            val duration = durationToString(record.duration)
-            /*Text(record.id)
-            Text(record.nickname)*/
-            Row {
-                record.route.buildings.mapIndexed { index, building ->
-                    var addText = "동 -> "
-                    if (index + 1 == record.route.buildings.size) {
-                        addText = "동"
-                    }
-                    Text(building.id.toString() + addText)
+            Text(
+                duration,
+                fontSize = 30.sp,
+                modifier =
+                    Modifier.padding(15.dp).weight(1f)
+                        .align(Alignment.CenterVertically),
+            )
+            record.route.buildings.mapIndexed { index, building ->
+                var addText = "-> "
+                if (index == record.route.buildings.size) {
+                    addText = ""
                 }
+                Text(
+                    building.id,
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier =
+                        Modifier.padding(15.dp).weight(1.5f)
+                            .align(Alignment.CenterVertically),
+                )
             }
-            Row {
-                Text(startTime)
-                Text(duration)
-            }
-
-            /*record.path.map{
-                Row(){
-                    Text(it.first.toString() + " : ")
-                    Text(it.second.lat.toString() + ", "  + it.second.lng.toString())
-                }
-            }*/
         }
     }
 }

@@ -3,6 +3,17 @@ package com.wafflestudio.snugo.models
 import com.naver.maps.geometry.LatLng
 import java.time.LocalDateTime
 
+enum class SortMethod {
+    RECENT,
+    NEWHIGH,
+    MY,
+}
+
+enum class RecordState {
+    BOX,
+    MAP,
+}
+
 data class Record(
     val id: String,
     val userId: String,

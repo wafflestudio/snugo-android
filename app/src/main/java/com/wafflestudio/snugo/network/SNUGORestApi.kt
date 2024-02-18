@@ -4,12 +4,15 @@ import com.wafflestudio.snugo.network.dto.GetBuildingResponse
 import com.wafflestudio.snugo.network.dto.GetBuildingsBySectionResponse
 import com.wafflestudio.snugo.network.dto.GetBuildingsResponse
 import com.wafflestudio.snugo.network.dto.GetDepartmentsResponse
+import com.wafflestudio.snugo.network.dto.GetRecentRecordsResponse
 import com.wafflestudio.snugo.network.dto.PostSignUpRequestBody
 import com.wafflestudio.snugo.network.dto.PostSignUpResponse
+import com.wafflestudio.snugo.network.dto.core.GetRecordDto
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface SNUGORestApi {
     @GET("/v1/departments")
@@ -32,4 +35,42 @@ interface SNUGORestApi {
     suspend fun getBuildingsBySection(
         @Path("section") section: String,
     ): GetBuildingsBySectionResponse
+
+    @GET("v1/record/top/{id}")
+    suspend fun getTopRecordDetail(
+        @Path("id") id: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): GetRecordDto
+
+    @GET("v1/record/recent")
+    suspend fun getRecentRecord(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): GetRecordDto
+
+    @GET("v1/record/recent/{id}")
+    suspend fun getRecentRecordDetail(
+        @Path("id") id: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): GetRecordDto
+
+    @GET("v1/record/newhigh")
+    suspend fun getNewHighRecord(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): GetRecordDto
+
+    @GET("v1/record/my")
+    suspend fun getMyRecord(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): GetRecordDto
+
+    @GET("/v1/record/recent")
+    suspend fun getRecentRecords(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): GetRecentRecordsResponse
 }
