@@ -21,10 +21,8 @@ class MyRecordsPagingSource
             return try {
                 val response =
                     api.getRecentRecords(
-                        GetRecentRecordsRequestBody(
-                            page = currentPage,
-                            size = params.loadSize,
-                        ),
+                        page = currentPage,
+                        size = params.loadSize
                     )
                 LoadResult.Page(
                     data = response.result.map { it.toRecord() },

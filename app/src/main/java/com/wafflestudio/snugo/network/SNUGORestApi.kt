@@ -71,6 +71,7 @@ interface SNUGORestApi {
 
     @GET("/v1/record/recent")
     suspend fun getRecentRecords(
-        @Body body: GetRecentRecordsRequestBody,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
     ): GetRecentRecordsResponse
 }
