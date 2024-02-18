@@ -2,14 +2,15 @@ package com.wafflestudio.snugo.features.records
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -20,14 +21,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wafflestudio.snugo.LocalNavController
 import com.wafflestudio.snugo.features.onboarding.UserViewModel
-import com.wafflestudio.snugo.models.Record
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,10 +50,11 @@ fun RecordsScreen(
 
     if (recordState.value == RecordState.BOX) {
         Column(
-            modifier = Modifier
-                .background(Color.White)
-                .fillMaxSize()
-        ){
+            modifier =
+                Modifier
+                    .background(Color.White)
+                    .fillMaxSize(),
+        ) {
             TabRow(
                 selectedTabIndex = pagerState.currentPage,
                 modifier = Modifier.fillMaxWidth(),
@@ -62,25 +63,26 @@ fun RecordsScreen(
                     Tab(
                         selected = it == pagerState.currentPage,
                         onClick = {
-                              scope.launch {
-                                  pagerState.animateScrollToPage(it)
-                              }
+                            scope.launch {
+                                pagerState.animateScrollToPage(it)
+                            }
                         },
                         text = {
                             Text(
-                                text = when (it) {
-                                    0 -> "최근"
-                                    1 -> "내 기록"
-                                    else -> "invalid"
-                                }
+                                text =
+                                    when (it) {
+                                        0 -> "최근"
+                                        1 -> "내 기록"
+                                        else -> "invalid"
+                                    },
                             )
-                        }
+                        },
                     )
                 }
             }
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) {
                 when (it) {
                     0 -> {
@@ -104,18 +106,30 @@ fun RecordsScreen(
                     }
 
                     1 -> {
-                        LazyColumn {
-                            items(myRecords.itemCount) {
-                                recordList[it]?.let { record ->
-                                    Log.d("aaaa", record.toString())
-                                    RecordBox(
-                                        record = record,
-                                        navController = navController,
-                                        boxClicked = {
-                                            boxIndex.value = it
-                                            recordState.value = RecordState.MAP
-                                        },
-                                    )
+                        if (myRecords.itemCount == 0) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                            ) {
+                                Text(
+                                    text = "기록이 없습니다.",
+                                    modifier = Modifier.align(Alignment.Center),
+                                    style = MaterialTheme.typography.titleLarge,
+                                )
+                            }
+                        } else {
+                            LazyColumn {
+                                items(myRecords.itemCount) {
+                                    recordList[it]?.let { record ->
+                                        Log.d("aaaa", record.toString())
+                                        RecordBox(
+                                            record = record,
+                                            navController = navController,
+                                            boxClicked = {
+                                                boxIndex.value = it
+                                                recordState.value = RecordState.MAP
+                                            },
+                                        )
+                                    }
                                 }
                             }
                         }

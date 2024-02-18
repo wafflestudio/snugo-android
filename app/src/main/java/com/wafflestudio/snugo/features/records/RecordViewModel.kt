@@ -11,7 +11,6 @@ import com.wafflestudio.snugo.models.SortMethod
 import com.wafflestudio.snugo.repository.RecordRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,16 +28,17 @@ class RecordViewModel
         private val querySignal = MutableStateFlow(Unit)
 
         @OptIn(ExperimentalCoroutinesApi::class)
-        val myRecords: StateFlow<PagingData<Record>> =
+        val recentRecords: StateFlow<PagingData<Record>> =
             querySignal.flatMapLatest {
                 recordRepository.getRecords()
                     .cachedIn(viewModelScope)
             }.stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
 
-    val recentRecords: StateFlow<PagingData<Record>> = querySignal.flatMapLatest {
-        recordRepository.getPagedMyRecords()
-            .cachedIn(viewModelScope)
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
+        val myRecords: StateFlow<PagingData<Record>> =
+            querySignal.flatMapLatest {
+                recordRepository.getPagedMyRecords()
+                    .cachedIn(viewModelScope)
+            }.stateIn(viewModelScope, SharingStarted.Eagerly, PagingData.empty())
 
         suspend fun fetchRecords() {
             querySignal.emit(Unit)

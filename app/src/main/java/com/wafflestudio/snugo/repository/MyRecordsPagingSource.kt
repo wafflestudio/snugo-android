@@ -5,7 +5,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wafflestudio.snugo.models.Record
 import com.wafflestudio.snugo.network.SNUGORestApi
-import com.wafflestudio.snugo.network.dto.GetRecentRecordsRequestBody
 import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,9 +19,9 @@ class MyRecordsPagingSource
             val currentPage = params.key ?: START_PAGE
             return try {
                 val response =
-                    api.getRecentRecords(
+                    api.getMyRecord(
                         page = currentPage,
-                        size = params.loadSize
+                        size = params.loadSize,
                     )
                 LoadResult.Page(
                     data = response.result.map { it.toRecord() },

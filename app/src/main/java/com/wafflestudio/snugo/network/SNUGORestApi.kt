@@ -4,7 +4,6 @@ import com.wafflestudio.snugo.network.dto.GetBuildingResponse
 import com.wafflestudio.snugo.network.dto.GetBuildingsBySectionResponse
 import com.wafflestudio.snugo.network.dto.GetBuildingsResponse
 import com.wafflestudio.snugo.network.dto.GetDepartmentsResponse
-import com.wafflestudio.snugo.network.dto.GetRecentRecordsRequestBody
 import com.wafflestudio.snugo.network.dto.GetRecentRecordsResponse
 import com.wafflestudio.snugo.network.dto.PostSignUpRequestBody
 import com.wafflestudio.snugo.network.dto.PostSignUpResponse

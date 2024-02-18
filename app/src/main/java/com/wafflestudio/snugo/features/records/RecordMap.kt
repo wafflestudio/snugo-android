@@ -1,5 +1,9 @@
 package com.wafflestudio.snugo.features.records
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,22 +24,26 @@ fun RecordMap(
     modifier: Modifier = Modifier,
     path: List<LatLng>,
 ) {
-    val cameraPositionState = rememberCameraPositionState()
-    NaverMap(
-        modifier = Modifier,
-        cameraPositionState = cameraPositionState,
-        locationSource = rememberFusedLocationSource(),
-        properties = MapProperties(locationTrackingMode = LocationTrackingMode.Follow),
-        uiSettings = MapUiSettings(isLocationButtonEnabled = true),
-    ) {
-        if (path.size >= 2) {
-            PathOverlay(
-                coords = path,
-                width = 5.dp,
-                outlineWidth = 2.dp,
-                color = Color.Red,
-                outlineColor = Color.Green,
-            )
+    Column {
+        Box(modifier = Modifier.padding(50.dp).height(400.dp)) {
+            val cameraPositionState = rememberCameraPositionState()
+            NaverMap(
+                modifier = Modifier,
+                cameraPositionState = cameraPositionState,
+                locationSource = rememberFusedLocationSource(),
+                properties = MapProperties(locationTrackingMode = LocationTrackingMode.Follow),
+                uiSettings = MapUiSettings(isLocationButtonEnabled = true),
+            ) {
+                if (path.size >= 2) {
+                    PathOverlay(
+                        coords = path,
+                        width = 5.dp,
+                        outlineWidth = 2.dp,
+                        color = Color.Red,
+                        outlineColor = Color.Green,
+                    )
+                }
+            }
         }
     }
 }

@@ -24,14 +24,13 @@ class RecordPageSource(
                 data = response.result.map { it.toRecord() },
                 prevKey = if (page == START_PAGE) null else page - 1,
                 nextKey =
-                    if (response.hasNext)
-                        {
-                            if (page == START_PAGE) {
-                                page + params.loadSize / PAGE_SIZE
-                            } else {
-                                page + 1
-                            }
+                    if (response.hasNext) {
+                        if (page == START_PAGE) {
+                            page + params.loadSize / PAGE_SIZE
                         } else {
+                            page + 1
+                        }
+                    } else {
                         null
                     },
             )
